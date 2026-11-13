@@ -31,7 +31,7 @@ export default async function handler(req, res) {
         'Views: view_room_bookings, view_room_service_details, view_tour_bookings, view_payment_summary, view_all_reviews, view_available_rooms.';
 
     const geminiHost = 'generativelanguage' + '.googleapis.com';
-    const models = ['gemini-3.8-flash', 'gemini-3.8-pro', 'gemini-2.5-pro'];
+    const models = ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-3.7-flash', 'gemini-3.8-flash'];
 
     async function askGemini(promptText) {
         let lastError = 'ไม่สามารถติดต่อ AI ได้';
