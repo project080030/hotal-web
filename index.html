@@ -5,17 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hotel & Tour Management System (AIE313)</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com"></script>
+    <script type="module">
+        import { createClient } from 'https://esm.sh';
+        window.supabase = { createClient };
+    </script>
 </head>
 <body>
     <nav class="navbar">
         <div class="logo">🏨 Hotel & Tour System</div>
         <div class="nav-links" id="nav-links" style="display: none;">
-            <button onclick="showTab('crud-tab', this)" class="nav-btn active">จัดการข้อมูล (ทุกตาราง)</button>
-            <button onclick="showTab('views-tab', this)" class="nav-btn">รายงานสรุป (6 Views)</button>
-            <button onclick="showTab('chat-tab', this)" class="nav-btn">🤖 AI ผู้ช่วยข้อมูล</button>
+            <button type="button" onclick="showTab('crud-tab', this)" class="nav-btn active">จัดการข้อมูล (ทุกตาราง)</button>
+            <button type="button" onclick="showTab('views-tab', this)" class="nav-btn">รายงานสรุป (6 Views)</button>
+            <button type="button" onclick="showTab('chat-tab', this)" class="nav-btn">🤖 AI ผู้ช่วยข้อมูล</button>
             <span id="user-display" class="user-badge"></span>
-            <button onclick="logout()" class="btn-logout">ออกจากระบบ</button>
+            <button type="button" onclick="logout()" class="btn-logout">ออกจากระบบ</button>
         </div>
     </nav>
 
@@ -25,16 +28,16 @@
             <h2>เข้าสู่ระบบ / สมัครสมาชิก</h2>
             <p class="subtitle">เข้าสู่ระบบเพื่อจัดการฐานข้อมูลและใช้งาน AI Chat</p>
             <input type="text" id="auth-name" placeholder="ชื่อ-นามสกุล (กรอกเฉพาะตอนสมัครสมาชิก)">
-            <input type="email" id="auth-email" placeholder="อีเมล (เช่น user@example.com)" required>
+            <input type="email" id="auth-email" placeholder="อีเมล (เช่น admin@hotel.com)" required>
             <input type="password" id="auth-password" placeholder="รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)" required>
             <div class="btn-group">
-                <button onclick="login()" class="btn-primary">เข้าสู่ระบบ (Login)</button>
-                <button onclick="register()" class="btn-secondary">สมัครสมาชิก (Register)</button>
+                <button type="button" onclick="login()" class="btn-primary">เข้าสู่ระบบ (Login)</button>
+                <button type="button" onclick="register()" class="btn-secondary">สมัครสมาชิก (Register)</button>
             </div>
             <p id="auth-msg" class="msg-text"></p>
         </section>
 
-        <!-- 2. หน้าจัดการข้อมูลแบบ Dynamic CRUD (เลือกได้ทุกตาราง) -->
+        <!-- 2. หน้าจัดการข้อมูลแบบ Dynamic CRUD -->
         <section id="crud-tab" class="tab-content" style="display: none;">
             <div class="card">
                 <div class="table-header">
@@ -58,19 +61,18 @@
                     </select>
                 </div>
 
-                <!-- ฟอร์มกรอกข้อมูลที่จะเปลี่ยนช่องอัตโนมัติตามตารางที่เลือก -->
                 <div id="dynamic-form-fields" class="form-grid"></div>
                 
                 <div style="margin-top: 15px;">
-                    <button onclick="saveDynamicRecord()" id="btn-save-record" class="btn-primary">➕ เพิ่มข้อมูลใหม่</button>
-                    <button onclick="resetDynamicForm()" id="btn-cancel-record" class="btn-secondary" style="display:none;">ยกเลิกการแก้ไข</button>
+                    <button type="button" onclick="saveDynamicRecord()" id="btn-save-record" class="btn-primary">➕ เพิ่มข้อมูลใหม่</button>
+                    <button type="button" onclick="resetDynamicForm()" id="btn-cancel-record" class="btn-secondary" style="display:none;">ยกเลิกการแก้ไข</button>
                 </div>
             </div>
 
             <div class="card">
                 <div class="table-header">
                     <h3 id="crud-table-title">ข้อมูลในตาราง</h3>
-                    <button onclick="loadCrudTableData()" class="btn-small">🔄 รีเฟรชข้อมูล</button>
+                    <button type="button" onclick="loadCrudTableData()" class="btn-small">🔄 รีเฟรชข้อมูล</button>
                 </div>
                 <div class="table-responsive" id="crud-table-container"></div>
             </div>
@@ -89,7 +91,7 @@
                         <option value="view_all_reviews">5. รวมรีวิวทั้งหมด (view_all_reviews)</option>
                         <option value="view_available_rooms">6. ห้องพักที่ว่างพร้อมใช้งาน (view_available_rooms)</option>
                     </select>
-                    <button onclick="loadSelectedView()" class="btn-primary">ดึงข้อมูล View</button>
+                    <button type="button" onclick="loadSelectedView()" class="btn-primary">ดึงข้อมูล View</button>
                 </div>
                 <div class="table-responsive" id="view-result-container" style="margin-top: 15px;"></div>
             </div>
@@ -99,7 +101,7 @@
         <section id="chat-tab" class="tab-content" style="display: none;">
             <div class="card chat-container">
                 <h2>🤖 ถาม-ตอบข้อมูลด้วย Gemini AI</h2>
-                <p class="subtitle">ตัวอย่างคำถาม: "มีห้องว่างกี่ห้อง", "สรุปรายได้รวมจากการจองห้องพักแยกตามสถานะ", "ลูกค้าคนไหนมียอดจองสูงสุด 5 อันดับแรก"</p>
+                <p class="subtitle">ตัวอย่างคำถาม: "มีห้องว่างกี่ห้อง", "สรุปรายได้รวมจากการจองห้องพัก", "ลูกค้าคนไหนมียอดจองสูงสุด"</p>
                 
                 <div id="chat-history" class="chat-history">
                     <div class="chat-bubble ai">สวัสดีครับ! ผมคือผู้ช่วย AI ประจำระบบโรงแรมและทัวร์ พิมพ์คำถามที่ต้องการค้นหาข้อมูลได้เลยครับ</div>
@@ -111,12 +113,12 @@
 
                 <div class="chat-input-box">
                     <input type="text" id="chat-input" placeholder="พิมพ์คำถามภาษาไทยหรืออังกฤษที่นี่..." onkeypress="if(event.key==='Enter') sendChat()">
-                    <button onclick="sendChat()" class="btn-primary">ส่งคำถาม</button>
+                    <button type="button" onclick="sendChat()" class="btn-primary">ส่งคำถาม</button>
                 </div>
             </div>
         </section>
     </div>
 
-    <script src="app.js"></script>
+    <script src="app.js" defer></script>
 </body>
 </html>
