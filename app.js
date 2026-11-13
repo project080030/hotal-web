@@ -1,11 +1,9 @@
-// ⚠️ แก้ไข 2 บรรทัดนี้ให้เป็นค่าจาก Supabase ของคุณ (Project Settings > API)
 const SUPABASE_URL = 'https://supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_jusl81rRe_vz1oYKATQkog__TSs2N9f';
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let currentUser = null;
 
-// โครงสร้างคอลัมน์ของทั้ง 15 ตารางสำหรับระบบ Dynamic CRUD
 const TABLE_SCHEMAS = {
     rooms: { pk: 'room_id', cols: ['room_number', 'room_type_id', 'status'] },
     room_types: { pk: 'room_type_id', cols: ['type_name', 'description', 'price_per_night', 'max_capacity'] },
@@ -41,7 +39,6 @@ function setupLoggedInUI(user) {
     loadSelectedView();
 }
 
-// 1. Register / Login / Logout
 async function register() {
     const name = document.getElementById('auth-name').value;
     const email = document.getElementById('auth-email').value;
@@ -49,9 +46,14 @@ async function register() {
     const msg = document.getElementById('auth-msg');
 
     if (!email || !password) return msg.innerText = 'กรุณากรอกอีเมลและรหัสผ่าน';
+    msg.style.color = '#2563eb';
+    msg.innerText = 'กำลังสมัครสมาชิก...';
 
     const { error } = await supabaseClient.auth.signUp({ email, password });
-    if (error) return msg.innerText = 'สมัครไม่สำเร็จ: ' + error.message;
+    if (error) {
+        msg.style.color = '#dc2626';
+        return msg.innerText = 'สมัครไม่สำเร็จ: ' + error.message;
+    }
 
     if (name) {
         await supabaseClient.from('customers').insert([{ name, email, password: 'auth_managed' }]);
@@ -65,8 +67,15 @@ async function login() {
     const password = document.getElementById('auth-password').value;
     const msg = document.getElementById('auth-msg');
 
+    if (!email || !password) return msg.innerText = 'กรุณากรอกอีเมลและรหัสผ่าน';
+    msg.style.color = '#2563eb';
+    msg.innerText = 'กำลังเข้าสู่ระบบ...';
+
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if (error) return msg.innerText = 'เข้าสู่ระบบไม่สำเร็จ: ' + error.message;
+    if (error) {
+        msg.style.color = '#dc2626';
+        return msg.innerText = 'เข้าสู่ระบบไม่สำเร็จ: ' + error.message;
+    }
 
     setupLoggedInUI(data.user);
 }
@@ -83,7 +92,6 @@ function showTab(tabId, btnElement) {
     if (btnElement) btnElement.classList.add('active');
 }
 
-// 2. Dynamic CRUD (รองรับทุกตาราง)
 function onSelectCrudTable() {
     resetDynamicForm();
     const tableName = document.getElementById('crud-table-selector').value;
@@ -111,7 +119,7 @@ async function loadCrudTableData() {
     if (error) return container.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
     if (!data || data.length === 0) return container.innerHTML = '<p>ยังไม่มีข้อมูลในตารางนี้</p>';
 
-    const headers = Object.keys(data);
+    const headers = Object.keys(data[0]);
     let html = '<table><thead><tr><th>จัดการ</th>';
     headers.forEach(h => html += `<th>${h}</th>`);
     html += '</tr></thead><tbody>';
@@ -185,7 +193,6 @@ async function deleteDynamicRecord(pkVal) {
     loadCrudTableData();
 }
 
-// 3. แสดงผล 6 Views
 async function loadSelectedView() {
     const viewName = document.getElementById('view-selector').value;
     const container = document.getElementById('view-result-container');
@@ -200,7 +207,7 @@ async function loadSelectedView() {
 
 function buildHtmlTable(dataArray) {
     if (!Array.isArray(dataArray) || dataArray.length === 0) return '';
-    const headers = Object.keys(dataArray);
+    const headers = Object.keys(dataArray[0]);
     let html = '<table><thead><tr>';
     headers.forEach(h => html += `<th>${h}</th>`);
     html += '</tr></thead><tbody>';
@@ -213,7 +220,6 @@ function buildHtmlTable(dataArray) {
     return html;
 }
 
-// 4. ระบบ Chat + Gemini LLM
 async function sendChat() {
     const input = document.getElementById('chat-input');
     const question = input.value.trim();
@@ -225,7 +231,3 @@ async function sendChat() {
     historyBox.innerHTML += `<div class="chat-bubble user">${question}</div>`;
     input.value = '';
     loadingBox.style.display = 'block';
-    historyBox.scrollTop = historyBox.scrollHeight;
-
-    try {
-        const response = await fetch('/api/chat', {
