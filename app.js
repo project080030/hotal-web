@@ -3,6 +3,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_jusl81rRe_vz1oYKATQkog__TSs2N9f';
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let currentUser = null;
+let editingPkValue = null;
 
 const TABLE_SCHEMAS = {
     rooms: { pk: 'room_id', cols: ['room_number', 'room_type_id', 'status'] },
@@ -22,8 +23,6 @@ const TABLE_SCHEMAS = {
     reviews: { pk: 'review_id', cols: ['customer_id', 'room_booking_id', 'tour_booking_id', 'rating', 'comment'] }
 };
 
-let editingPkValue = null;
-
 window.onload = async () => {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (session) setupLoggedInUI(session.user);
@@ -40,41 +39,53 @@ function setupLoggedInUI(user) {
 }
 
 async function register() {
-    const name = document.getElementById('auth-name').value;
-    const email = document.getElementById('auth-email').value;
-    const password = document.getElementById('auth-password').value;
+    const name = document.getElementById('auth-name').value.trim();
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value.trim();
     const msg = document.getElementById('auth-msg');
 
-    if (!email || !password) return msg.innerText = 'กรุณากรอกอีเมลและรหัสผ่าน';
+    if (!email || !password) {
+        msg.style.color = '#dc2626';
+        msg.innerText = 'กรุณากรอกอีเมลและรหัสผ่าน';
+        return;
+    }
+
     msg.style.color = '#2563eb';
-    msg.innerText = 'กำลังสมัครสมาชิก...';
+    msg.innerText = '⏳ กำลังสมัครสมาชิก...';
 
     const { error } = await supabaseClient.auth.signUp({ email, password });
     if (error) {
         msg.style.color = '#dc2626';
-        return msg.innerText = 'สมัครไม่สำเร็จ: ' + error.message;
+        msg.innerText = 'สมัครไม่สำเร็จ: ' + error.message;
+        return;
     }
 
     if (name) {
         await supabaseClient.from('customers').insert({ name, email, password: 'auth_managed' });
     }
     msg.style.color = 'green';
-    msg.innerText = 'สมัครสมาชิกสำเร็จ! สามารถกดเข้าสู่ระบบได้เลย';
+    msg.innerText = '✅ สมัครสมาชิกสำเร็จ! กดปุ่ม "เข้าสู่ระบบ (Login)" ได้เลย';
 }
 
 async function login() {
-    const email = document.getElementById('auth-email').value;
-    const password = document.getElementById('auth-password').value;
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value.trim();
     const msg = document.getElementById('auth-msg');
 
-    if (!email || !password) return msg.innerText = 'กรุณากรอกอีเมลและรหัสผ่าน';
+    if (!email || !password) {
+        msg.style.color = '#dc2626';
+        msg.innerText = 'กรุณากรอกอีเมลและรหัสผ่าน';
+        return;
+    }
+
     msg.style.color = '#2563eb';
-    msg.innerText = 'กำลังเข้าสู่ระบบ...';
+    msg.innerText = '⏳ กำลังเข้าสู่ระบบ...';
 
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) {
         msg.style.color = '#dc2626';
-        return msg.innerText = 'เข้าสู่ระบบไม่สำเร็จ: ' + error.message;
+        msg.innerText = 'เข้าสู่ระบบไม่สำเร็จ: ' + error.message;
+        return;
     }
 
     setupLoggedInUI(data.user);
@@ -227,7 +238,3 @@ async function sendChat() {
     const question = input.value.trim();
     if (!question) return;
 
-    const historyBox = document.getElementById('chat-history');
-    const loadingBox = document.getElementById('chat-loading');
-
-    historyBox.innerHTML += `<div class="chat-bubble user">${question}</div>`;
