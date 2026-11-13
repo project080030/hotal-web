@@ -3,7 +3,8 @@
 // 1. SUPABASE CONFIGURATION
 // =====================================================
 
-const SUPABASE_URL = 'https://supabase.co';
+const PROJECT_ID = 'cbwywzbrijqlijwykxrb';
+const SUPABASE_URL = 'https://' + PROJECT_ID + '.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_jusl81rRe_vz1oYKATQkog__TSs2N9f';
 
 let currentUser = null;
