@@ -6,12 +6,8 @@
 const SUPABASE_URL = 'https://supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_jusl81rRe_vz1oYKATQkog__TSs2N9f';
 
-const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-);
-
 let currentUser = null;
+let accessToken = SUPABASE_ANON_KEY;
 let editingPkValue = null;
 
 
@@ -20,104 +16,73 @@ let editingPkValue = null;
 // =====================================================
 
 const TABLE_SCHEMAS = {
-    rooms: {
-        pk: 'room_id',
-        cols: ['room_number', 'room_type_id', 'status']
-    },
-
-    room_types: {
-        pk: 'room_type_id',
-        cols: ['type_name', 'description', 'price_per_night', 'max_capacity']
-    },
-
-    customers: {
-        pk: 'customer_id',
-        cols: ['name', 'phone', 'email', 'password']
-    },
-
-    staff: {
-        pk: 'staff_id',
-        cols: ['name', 'role', 'email', 'phone']
-    },
-
-    promotions: {
-        pk: 'promotion_id',
-        cols: ['promotion_name', 'discount', 'start_date', 'end_date']
-    },
-
+    rooms: { pk: 'room_id', cols: ['room_number', 'room_type_id', 'status'] },
+    room_types: { pk: 'room_type_id', cols: ['type_name', 'description', 'price_per_night', 'max_capacity'] },
+    customers: { pk: 'customer_id', cols: ['name', 'phone', 'email', 'password'] },
+    staff: { pk: 'staff_id', cols: ['name', 'role', 'email', 'phone'] },
+    promotions: { pk: 'promotion_id', cols: ['promotion_name', 'discount', 'start_date', 'end_date'] },
     room_bookings: {
         pk: 'booking_id',
-        cols: [
-            'customer_id', 'room_id', 'promotion_id', 'staff_id',
-            'check_in', 'check_out', 'total_amount', 'status'
-        ]
+        cols: ['customer_id', 'room_id', 'promotion_id', 'staff_id', 'check_in', 'check_out', 'total_amount', 'status']
     },
-
-    payments: {
-        pk: 'payment_id',
-        cols: ['booking_id', 'staff_id', 'amount', 'payment_method', 'status']
-    },
-
-    categories: {
-        pk: 'category_id',
-        cols: ['category_name', 'description']
-    },
-
-    menu_items: {
-        pk: 'menu_id',
-        cols: ['category_id', 'item_name', 'price', 'is_available']
-    },
-
-    room_service_orders: {
-        pk: 'order_id',
-        cols: ['room_id', 'booking_id', 'staff_id', 'total_amount', 'status']
-    },
-
-    order_details: {
-        pk: 'detail_id',
-        cols: ['order_id', 'menu_id', 'quantity', 'subtotal']
-    },
-
-    tour_guides: {
-        pk: 'guide_id',
-        cols: ['name', 'phone', 'languages', 'license_no', 'status']
-    },
-
-    tour_packages: {
-        pk: 'package_id',
-        cols: ['package_name', 'destination', 'duration_hours', 'price', 'max_capacity']
-    },
-
+    payments: { pk: 'payment_id', cols: ['booking_id', 'staff_id', 'amount', 'payment_method', 'status'] },
+    categories: { pk: 'category_id', cols: ['category_name', 'description'] },
+    menu_items: { pk: 'menu_id', cols: ['category_id', 'item_name', 'price', 'is_available'] },
+    room_service_orders: { pk: 'order_id', cols: ['room_id', 'booking_id', 'staff_id', 'total_amount', 'status'] },
+    order_details: { pk: 'detail_id', cols: ['order_id', 'menu_id', 'quantity', 'subtotal'] },
+    tour_guides: { pk: 'guide_id', cols: ['name', 'phone', 'languages', 'license_no', 'status'] },
+    tour_packages: { pk: 'package_id', cols: ['package_name', 'destination', 'duration_hours', 'price', 'max_capacity'] },
     tour_bookings: {
         pk: 'booking_id',
-        cols: [
-            'customer_id', 'package_id', 'guide_id', 'staff_id',
-            'tour_date', 'num_people', 'total_amount', 'status'
-        ]
+        cols: ['customer_id', 'package_id', 'guide_id', 'staff_id', 'tour_date', 'num_people', 'total_amount', 'status']
     },
+    reviews: { pk: 'review_id', cols: ['customer_id', 'room_booking_id', 'tour_booking_id', 'rating', 'comment'] }
+};
 
-    reviews: {
-        pk: 'review_id',
-        cols: ['customer_id', 'room_booking_id', 'tour_booking_id', 'rating', 'comment']
+
+// =====================================================
+// 3. API HEADER MANAGEMENT
+// =====================================================
+
+function getHeaders(extraHeaders) {
+    const headers = {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + accessToken
+    };
+
+    if (extraHeaders) {
+        Object.keys(extraHeaders).forEach(function (key) {
+            headers[key] = extraHeaders[key];
+        });
+    }
+
+    return headers;
+}
+
+
+// =====================================================
+// 4. AUTHENTICATION INITIALIZATION
+// =====================================================
+
+window.onload = function () {
+    const savedUser = localStorage.getItem('hotel_user');
+    const savedToken = localStorage.getItem('hotel_token');
+
+    if (savedUser && savedToken) {
+        try {
+            accessToken = savedToken;
+            setupLoggedInUI(JSON.parse(savedUser));
+        } catch (err) {
+            localStorage.removeItem('hotel_token');
+            localStorage.removeItem('hotel_user');
+        }
     }
 };
 
 
 // =====================================================
-// 3. AUTHENTICATION INITIALIZATION
-// =====================================================
-
-window.onload = async function () {
-    const res = await supabaseClient.auth.getSession();
-
-    if (res.data && res.data.session) {
-        setupLoggedInUI(res.data.session.user);
-    }
-};
-
-
-// =====================================================
-// 4. LOGIN / REGISTER / LOGOUT
+// 5. LOGIN UI SETUP
 // =====================================================
 
 function setupLoggedInUI(user) {
@@ -132,6 +97,10 @@ function setupLoggedInUI(user) {
     loadSelectedView();
 }
 
+
+// =====================================================
+// 6. REGISTER
+// =====================================================
 
 async function register() {
     const name = document.getElementById('auth-name').value.trim();
@@ -148,37 +117,54 @@ async function register() {
     msg.style.color = '#2563eb';
     msg.innerText = '⏳ กำลังสมัครสมาชิก...';
 
-    const res = await supabaseClient.auth.signUp({
-        email: email,
-        password: password
-    });
-
-    if (res.error) {
-        msg.style.color = '#dc2626';
-        msg.innerText = 'สมัครไม่สำเร็จ: ' + res.error.message;
-        return;
-    }
-
-    if (name) {
-        const customerRes = await supabaseClient
-            .from('customers')
-            .insert({
-                name: name,
+    try {
+        const res = await fetch(SUPABASE_URL + '/auth/v1/signup', {
+            method: 'POST',
+            headers: getHeaders(),
+            body: JSON.stringify({
                 email: email,
-                password: 'auth_managed'
-            });
+                password: password
+            })
+        });
 
-        if (customerRes.error) {
+        const data = await res.json();
+
+        if (!res.ok) {
             msg.style.color = '#dc2626';
-            msg.innerText = 'สมัครสมาชิกแล้ว แต่บันทึกข้อมูลลูกค้าไม่สำเร็จ';
+            msg.innerText = 'สมัครไม่สำเร็จ: ' +
+                (data.msg || data.error_description || data.message || 'ตรวจสอบอีเมล/รหัสผ่าน');
             return;
         }
-    }
 
-    msg.style.color = 'green';
-    msg.innerText = '✅ สมัครสมาชิกสำเร็จ! กดปุ่ม "เข้าสู่ระบบ (Login)" ได้เลย';
+        if (name) {
+            const customerRes = await fetch(SUPABASE_URL + '/rest/v1/customers', {
+                method: 'POST',
+                headers: getHeaders({ 'Prefer': 'return=minimal' }),
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: 'auth_managed'
+                })
+            });
+
+            if (!customerRes.ok) {
+                throw new Error('สมัครสมาชิกสำเร็จ แต่บันทึกข้อมูลลูกค้าไม่สำเร็จ');
+            }
+        }
+
+        msg.style.color = 'green';
+        msg.innerText = '✅ สมัครสมาชิกสำเร็จ! กดปุ่ม "เข้าสู่ระบบ (Login)" ได้เลย';
+
+    } catch (err) {
+        msg.style.color = '#dc2626';
+        msg.innerText = 'เกิดข้อผิดพลาด: ' + err.message;
+    }
 }
 
+
+// =====================================================
+// 7. LOGIN
+// =====================================================
 
 async function login() {
     const email = document.getElementById('auth-email').value.trim();
@@ -194,29 +180,59 @@ async function login() {
     msg.style.color = '#2563eb';
     msg.innerText = '⏳ กำลังเข้าสู่ระบบ...';
 
-    const res = await supabaseClient.auth.signInWithPassword({
-        email: email,
-        password: password
-    });
+    try {
+        const res = await fetch(
+            SUPABASE_URL + '/auth/v1/token?grant_type=password',
+            {
+                method: 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            }
+        );
 
-    if (res.error) {
+        const data = await res.json();
+
+        if (!res.ok) {
+            msg.style.color = '#dc2626';
+            msg.innerText = 'เข้าสู่ระบบไม่สำเร็จ: ' +
+                (data.error_description || data.msg || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+            return;
+        }
+
+        accessToken = data.access_token;
+
+        localStorage.setItem('hotel_token', accessToken);
+        localStorage.setItem('hotel_user', JSON.stringify(data.user));
+
+        setupLoggedInUI(data.user);
+
+    } catch (err) {
         msg.style.color = '#dc2626';
-        msg.innerText = 'เข้าสู่ระบบไม่สำเร็จ: ' + res.error.message;
-        return;
+        msg.innerText = 'เกิดข้อผิดพลาด: ' + err.message;
     }
-
-    setupLoggedInUI(res.data.user);
 }
 
 
-async function logout() {
-    await supabaseClient.auth.signOut();
+// =====================================================
+// 8. LOGOUT
+// =====================================================
+
+function logout() {
+    localStorage.removeItem('hotel_token');
+    localStorage.removeItem('hotel_user');
+
+    currentUser = null;
+    accessToken = SUPABASE_ANON_KEY;
+
     location.reload();
 }
 
 
 // =====================================================
-// 5. NAVIGATION / TAB MANAGEMENT
+// 9. NAVIGATION / TAB MANAGEMENT
 // =====================================================
 
 function showTab(tabId, btnElement) {
@@ -237,7 +253,7 @@ function showTab(tabId, btnElement) {
 
 
 // =====================================================
-// 6. CRUD TABLE MANAGEMENT
+// 10. CRUD TABLE SELECTION
 // =====================================================
 
 function onSelectCrudTable() {
@@ -271,7 +287,7 @@ function onSelectCrudTable() {
 
 
 // =====================================================
-// 7. LOAD CRUD TABLE DATA
+// 11. LOAD CRUD TABLE DATA
 // =====================================================
 
 async function loadCrudTableData() {
@@ -286,68 +302,78 @@ async function loadCrudTableData() {
 
     container.innerHTML = '<p>กำลังโหลด...</p>';
 
-    const res = await supabaseClient
-        .from(tableName)
-        .select('*')
-        .order(schema.pk, { ascending: false })
-        .limit(20);
+    try {
+        const res = await fetch(
+            SUPABASE_URL + '/rest/v1/' + tableName +
+            '?select=*&order=' + schema.pk + '.desc&limit=20',
+            {
+                headers: getHeaders()
+            }
+        );
 
-    if (res.error) {
-        container.textContent = 'Error: ' + res.error.message;
-        return;
-    }
+        const data = await res.json();
 
-    if (!res.data || res.data.length === 0) {
-        container.innerHTML = '<p>ยังไม่มีข้อมูลในตารางนี้</p>';
-        return;
-    }
+        if (!res.ok) {
+            container.textContent = 'Error: ' + (data.message || JSON.stringify(data));
+            return;
+        }
 
-    const headers = Object.keys(res.data[0]);
+        if (!data || data.length === 0) {
+            container.innerHTML = '<p>ยังไม่มีข้อมูลในตารางนี้</p>';
+            return;
+        }
 
-    let html = `
-        <table>
-            <thead>
+        const headers = Object.keys(data[0]);
+
+        let html = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>จัดการ</th>
+                        ${headers.map(h => `<th>${h}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        data.forEach(function (row) {
+            const pkVal = JSON.stringify(row[schema.pk]);
+            const rowJson = encodeURIComponent(JSON.stringify(row));
+
+            html += `
                 <tr>
-                    <th>จัดการ</th>
-                    ${headers.map(h => `<th>${h}</th>`).join('')}
-                </tr>
-            </thead>
-            <tbody>
-    `;
+                    <td>
+                        <button class="btn-edit"
+                            onclick="editDynamicRecord('${rowJson}')">
+                            แก้ไข
+                        </button>
 
-    res.data.forEach(function (row) {
-        const pkVal = JSON.stringify(row[schema.pk]);
-        const rowJson = encodeURIComponent(JSON.stringify(row));
+                        <button class="btn-del"
+                            onclick='deleteDynamicRecord(${pkVal})'>
+                            ลบ
+                        </button>
+                    </td>
+
+                    ${headers.map(h => `<td>${row[h] ?? '-'}</td>`).join('')}
+                </tr>
+            `;
+        });
 
         html += `
-            <tr>
-                <td>
-                    <button class="btn-edit"
-                        onclick="editDynamicRecord('${rowJson}')">
-                        แก้ไข
-                    </button>
-
-                    <button class="btn-del"
-                        onclick='deleteDynamicRecord(${pkVal})'>
-                        ลบ
-                    </button>
-                </td>
-                ${headers.map(h => `<td>${row[h] ?? '-'}</td>`).join('')}
-            </tr>
+                </tbody>
+            </table>
         `;
-    });
 
-    html += `
-            </tbody>
-        </table>
-    `;
+        container.innerHTML = html;
 
-    container.innerHTML = html;
+    } catch (err) {
+        container.textContent = 'Error: ' + err.message;
+    }
 }
 
 
 // =====================================================
-// 8. EDIT / RESET DYNAMIC FORM
+// 12. EDIT DYNAMIC RECORD
 // =====================================================
 
 function editDynamicRecord(encodedRow) {
@@ -373,6 +399,10 @@ function editDynamicRecord(encodedRow) {
 }
 
 
+// =====================================================
+// 13. RESET DYNAMIC FORM
+// =====================================================
+
 function resetDynamicForm() {
     editingPkValue = null;
 
@@ -386,7 +416,7 @@ function resetDynamicForm() {
 
 
 // =====================================================
-// 9. SAVE / INSERT / UPDATE RECORD
+// 14. SAVE / INSERT / UPDATE RECORD
 // =====================================================
 
 async function saveDynamicRecord() {
@@ -402,33 +432,44 @@ async function saveDynamicRecord() {
         payload[col] = val === '' ? null : val;
     });
 
-    let res;
+    try {
+        let res;
 
-    if (editingPkValue !== null) {
-        res = await supabaseClient
-            .from(tableName)
-            .update(payload)
-            .eq(schema.pk, editingPkValue);
-    } else {
-        res = await supabaseClient
-            .from(tableName)
-            .insert(payload);
+        if (editingPkValue !== null) {
+            res = await fetch(
+                SUPABASE_URL + '/rest/v1/' + tableName +
+                '?' + schema.pk + '=eq.' + encodeURIComponent(editingPkValue),
+                {
+                    method: 'PATCH',
+                    headers: getHeaders({ 'Prefer': 'return=minimal' }),
+                    body: JSON.stringify(payload)
+                }
+            );
+
+        } else {
+            res = await fetch(SUPABASE_URL + '/rest/v1/' + tableName, {
+                method: 'POST',
+                headers: getHeaders({ 'Prefer': 'return=minimal' }),
+                body: JSON.stringify(payload)
+            });
+        }
+
+        if (!res.ok) {
+            const errData = await res.json();
+            return alert('บันทึกไม่สำเร็จ: ' + (errData.message || JSON.stringify(errData)));
+        }
+
+        resetDynamicForm();
+        loadCrudTableData();
+
+    } catch (err) {
+        alert('Error: ' + err.message);
     }
-
-    if (res.error) {
-        return alert(
-            (editingPkValue !== null ? 'แก้ไข' : 'เพิ่ม') +
-            'ไม่สำเร็จ: ' + res.error.message
-        );
-    }
-
-    resetDynamicForm();
-    loadCrudTableData();
 }
 
 
 // =====================================================
-// 10. DELETE RECORD
+// 15. DELETE DYNAMIC RECORD
 // =====================================================
 
 async function deleteDynamicRecord(pkVal) {
@@ -444,24 +485,34 @@ async function deleteDynamicRecord(pkVal) {
         return;
     }
 
-    const res = await supabaseClient
-        .from(tableName)
-        .delete()
-        .eq(schema.pk, pkVal);
-
-    if (res.error) {
-        return alert(
-            'ลบไม่สำเร็จ (อาจมีข้อมูลตารางอื่นอ้างอิงอยู่): ' +
-            res.error.message
+    try {
+        const res = await fetch(
+            SUPABASE_URL + '/rest/v1/' + tableName +
+            '?' + schema.pk + '=eq.' + encodeURIComponent(pkVal),
+            {
+                method: 'DELETE',
+                headers: getHeaders({ 'Prefer': 'return=minimal' })
+            }
         );
-    }
 
-    loadCrudTableData();
+        if (!res.ok) {
+            const errData = await res.json();
+            return alert(
+                'ลบไม่สำเร็จ (อาจมีข้อมูลตารางอื่นอ้างอิงอยู่): ' +
+                (errData.message || JSON.stringify(errData))
+            );
+        }
+
+        loadCrudTableData();
+
+    } catch (err) {
+        alert('Error: ' + err.message);
+    }
 }
 
 
 // =====================================================
-// 11. LOAD DATABASE VIEW
+// 16. LOAD DATABASE VIEW
 // =====================================================
 
 async function loadSelectedView() {
@@ -470,27 +521,36 @@ async function loadSelectedView() {
 
     container.innerHTML = '<p>กำลังโหลดข้อมูล...</p>';
 
-    const res = await supabaseClient
-        .from(viewName)
-        .select('*')
-        .limit(20);
+    try {
+        const res = await fetch(
+            SUPABASE_URL + '/rest/v1/' + viewName + '?select=*&limit=20',
+            {
+                headers: getHeaders()
+            }
+        );
 
-    if (res.error) {
-        container.textContent = 'Error: ' + res.error.message;
-        return;
+        const data = await res.json();
+
+        if (!res.ok) {
+            container.textContent = 'Error: ' + (data.message || JSON.stringify(data));
+            return;
+        }
+
+        if (!data || data.length === 0) {
+            container.innerHTML = '<p>ไม่มีข้อมูลใน View นี้</p>';
+            return;
+        }
+
+        container.innerHTML = buildHtmlTable(data);
+
+    } catch (err) {
+        container.textContent = 'Error: ' + err.message;
     }
-
-    if (!res.data || res.data.length === 0) {
-        container.innerHTML = '<p>ไม่มีข้อมูลใน View นี้</p>';
-        return;
-    }
-
-    container.innerHTML = buildHtmlTable(res.data);
 }
 
 
 // =====================================================
-// 12. BUILD HTML TABLE
+// 17. BUILD HTML TABLE
 // =====================================================
 
 function buildHtmlTable(dataArray) {
@@ -530,7 +590,7 @@ function buildHtmlTable(dataArray) {
 
 
 // =====================================================
-// 13. AI CHAT SYSTEM
+// 18. AI CHAT SYSTEM
 // =====================================================
 
 async function sendChat() {
@@ -542,7 +602,9 @@ async function sendChat() {
     const historyBox = document.getElementById('chat-history');
     const loadingBox = document.getElementById('chat-loading');
 
-    historyBox.innerHTML += `<div class="user-message">${question}</div>`;
+    historyBox.innerHTML += `
+        <div class="user-message">${question}</div>
+    `;
 
     input.value = '';
     loadingBox.style.display = 'block';
@@ -571,7 +633,11 @@ async function sendChat() {
             throw new Error(result.error || 'เกิดข้อผิดพลาดจาก Server');
         }
 
-        let aiHtml = `<div class="ai-message">${result.answer}</div>`;
+        let aiHtml = `
+            <div class="ai-message">
+                ${result.answer}
+            </div>
+        `;
 
         if (result.data && result.data.length > 0) {
             aiHtml += buildHtmlTable(result.data);
@@ -600,3 +666,8 @@ async function sendChat() {
 
     historyBox.scrollTop = historyBox.scrollHeight;
 }
+
+
+// =====================================================
+// END OF JAVASCRIPT
+// =====================================================
