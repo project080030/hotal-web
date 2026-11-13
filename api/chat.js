@@ -30,7 +30,8 @@ export default async function handler(req, res) {
         'reviews (review_id, customer_id, room_booking_id, tour_booking_id, rating, comment, created_at). ' +
         'Views: view_room_bookings, view_room_service_details, view_tour_bookings, view_payment_summary, view_all_reviews, view_available_rooms.';
 
-    const geminiUrl = 'https://googleapis.com' + GEMINI_API_KEY;
+    const geminiHost = 'generativelanguage' + '.googleapis.com';
+    const geminiUrl = 'https://' + geminiHost + '/v1beta/models/gemini-2.5-flash:generateContent?key=' + GEMINI_API_KEY;
 
     try {
         const promptSql = 'คุณคือผู้เชี่ยวชาญ PostgreSQL จงแปลงคำถามของผู้ใช้เป็นคำสั่ง SQL (SELECT เท่านั้น ห้ามมีเครื่องหมาย ; ปิดท้าย และห้ามใช้ markdown) ' +
