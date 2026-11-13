@@ -56,7 +56,7 @@ async function register() {
     }
 
     if (name) {
-        await supabaseClient.from('customers').insert([{ name, email, password: 'auth_managed' }]);
+        await supabaseClient.from('customers').insert({ name, email, password: 'auth_managed' });
     }
     msg.style.color = 'green';
     msg.innerText = 'สมัครสมาชิกสำเร็จ! สามารถกดเข้าสู่ระบบได้เลย';
@@ -119,7 +119,8 @@ async function loadCrudTableData() {
     if (error) return container.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
     if (!data || data.length === 0) return container.innerHTML = '<p>ยังไม่มีข้อมูลในตารางนี้</p>';
 
-    const headers = Object.keys(data[0]);
+    const firstRow = data.at(0);
+    const headers = Object.keys(firstRow);
     let html = '<table><thead><tr><th>จัดการ</th>';
     headers.forEach(h => html += `<th>${h}</th>`);
     html += '</tr></thead><tbody>';
@@ -175,7 +176,7 @@ async function saveDynamicRecord() {
         const { error } = await supabaseClient.from(tableName).update(payload).eq(schema.pk, editingPkValue);
         if (error) return alert('แก้ไขไม่สำเร็จ: ' + error.message);
     } else {
-        const { error } = await supabaseClient.from(tableName).insert([payload]);
+        const { error } = await supabaseClient.from(tableName).insert(payload);
         if (error) return alert('เพิ่มข้อมูลไม่สำเร็จ: ' + error.message);
     }
 
@@ -207,7 +208,8 @@ async function loadSelectedView() {
 
 function buildHtmlTable(dataArray) {
     if (!Array.isArray(dataArray) || dataArray.length === 0) return '';
-    const headers = Object.keys(dataArray[0]);
+    const firstRow = dataArray.at(0);
+    const headers = Object.keys(firstRow);
     let html = '<table><thead><tr>';
     headers.forEach(h => html += `<th>${h}</th>`);
     html += '</tr></thead><tbody>';
@@ -229,5 +231,3 @@ async function sendChat() {
     const loadingBox = document.getElementById('chat-loading');
 
     historyBox.innerHTML += `<div class="chat-bubble user">${question}</div>`;
-    input.value = '';
-    loadingBox.style.display = 'block';
