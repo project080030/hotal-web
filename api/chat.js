@@ -31,7 +31,29 @@ export default async function handler(req, res) {
         'Views: view_room_bookings, view_room_service_details, view_tour_bookings, view_payment_summary, view_all_reviews, view_available_rooms.';
 
     const geminiHost = 'generativelanguage' + '.googleapis.com';
-    const geminiUrl = 'https://' + geminiHost + '/v1beta/models/gemini-3.8-flash:generateContent?key=' + GEMINI_API_KEY;
+    const models = ['gemini-3.8-flash', 'gemini-3.8-pro', 'gemini-2.5-pro'];
+
+    async function askGemini(promptText) {
+        let lastError = 'ไม่สามารถติดต่อ AI ได้';
+        for (let i = 0; i < models.length; i++) {
+            const url = 'https://' + geminiHost + '/v1beta/models/' + models[i] + ':generateContent?key=' + GEMINI_API_KEY;
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+                });
+                const data = await response.json();
+                if (response.ok && data.candidates && data.candidates.length > 0) {
+                    return data.candidates[0].content.parts[0].text;
+                }
+                lastError = data.error ? data.error.message : JSON.stringify(data);
+            } catch (e) {
+                lastError = e.message;
+            }
+        }
+        throw new Error('Gemini API Error: ' + lastError);
+    }
 
     try {
         const promptSql = 'คุณคือผู้เชี่ยวชาญ PostgreSQL จงแปลงคำถามของผู้ใช้เป็นคำสั่ง SQL (SELECT เท่านั้น ห้ามมีเครื่องหมาย ; ปิดท้าย และห้ามใช้ markdown) ' +
@@ -39,21 +61,7 @@ export default async function handler(req, res) {
             'หากเป็นคำถามทั่วไปที่ไม่เกี่ยวกับฐานข้อมูล ให้ตอบว่า NO_SQL ' +
             'คำถาม: "' + question + '"';
 
-        const gRes1 = await fetch(geminiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: promptSql }] }] })
-        });
-        const gData1 = await gRes1.json();
-
-        if (!gRes1.ok) {
-            throw new Error('Gemini API Error: ' + (gData1.error ? gData1.error.message : JSON.stringify(gData1)));
-        }
-
-        let generatedSql = 'NO_SQL';
-        if (gData1.candidates && gData1.candidates.length > 0) {
-            generatedSql = gData1.candidates[0].content.parts[0].text.trim();
-        }
+        let generatedSql = await askGemini(promptSql);
         generatedSql = generatedSql.replace(/```sql|```|;/g, '').trim();
 
         let queryResult = [];
@@ -80,30 +88,10 @@ export default async function handler(req, res) {
                 'และข้อมูลที่ได้จากฐานข้อมูล: ' + JSON.stringify(queryResult).slice(0, 3000) + ' ' +
                 'จงสรุปคำตอบเป็นภาษาไทยให้ชัดเจน กระชับ และสุภาพ';
 
-            const gRes2 = await fetch(geminiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: promptAnswer }] }] })
-            });
-            const gData2 = await gRes2.json();
-            if (gData2.candidates && gData2.candidates.length > 0) {
-                finalAnswer = gData2.candidates[0].content.parts[0].text;
-            } else {
-                finalAnswer = 'พบข้อมูลตามตารางด้านล่างครับ';
-            }
+            finalAnswer = await askGemini(promptAnswer);
         } else {
             generatedSql = null;
-            const gGeneral = await fetch(geminiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ parts: [{ text: 'ตอบคำถามนี้ในฐานะผู้ช่วยระบบโรงแรมและทัวร์: ' + question }] }] })
-            });
-            const genData = await gGeneral.json();
-            if (genData.candidates && genData.candidates.length > 0) {
-                finalAnswer = genData.candidates[0].content.parts[0].text;
-            } else {
-                finalAnswer = 'สวัสดีครับ มีข้อมูลส่วนไหนของโรงแรมหรือทัวร์ให้ช่วยค้นหาไหมครับ';
-            }
+            finalAnswer = await askGemini('ตอบคำถามนี้ในฐานะผู้ช่วยระบบโรงแรมและทัวร์: ' + question);
         }
 
         await fetch(SUPABASE_URL + '/rest/v1/chat_logs', {
