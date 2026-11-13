@@ -1,16 +1,15 @@
-```javascript
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
-    const { question, userEmail } = req.body;
+    const { question, userEmail } = req.body || {};
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
     const SUPABASE_URL = process.env.SUPABASE_URL;
     const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 
     if (!GEMINI_API_KEY || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
-        return res.status(500).json({ error: 'ยังไม่ได้ตั้งค่า Environment Variables บน Server' });
+        return res.status(500).json({ error: 'ยังไม่ได้ตั้งค่า Environment Variables บน Vercel' });
     }
 
     const dbSchema = 'Tables: ' +
@@ -31,7 +30,7 @@ export default async function handler(req, res) {
         'reviews (review_id, customer_id, room_booking_id, tour_booking_id, rating, comment, created_at). ' +
         'Views: view_room_bookings, view_room_service_details, view_tour_bookings, view_payment_summary, view_all_reviews, view_available_rooms.';
 
-    const geminiEndpoint = 'https://googleapis.com' + GEMINI_API_KEY;
+    const geminiUrl = 'https://googleapis.com' + GEMINI_API_KEY;
 
     try {
         const promptSql = 'คุณคือผู้เชี่ยวชาญ PostgreSQL จงแปลงคำถามของผู้ใช้เป็นคำสั่ง SQL (SELECT เท่านั้น ห้ามมีเครื่องหมาย ; ปิดท้าย และห้ามใช้ markdown) ' +
@@ -39,15 +38,21 @@ export default async function handler(req, res) {
             'หากเป็นคำถามทั่วไปที่ไม่เกี่ยวกับฐานข้อมูล ให้ตอบว่า NO_SQL ' +
             'คำถาม: "' + question + '"';
 
-        const geminiRes1 = await fetch(geminiEndpoint, {
+        const gRes1 = await fetch(geminiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ contents: [{ parts: [{ text: promptSql }] }] })
         });
-        const geminiData1 = await geminiRes1.json();
-        const candidate1 = geminiData1.candidates ? geminiData1.candidates[0] : null;
-        const part1 = candidate1 && candidate1.content && candidate1.content.parts ? candidate1.content.parts[0] : null;
-        let generatedSql = part1 && part1.text ? part1.text.trim() : 'NO_SQL';
+        const gData1 = await gRes1.json();
+
+        if (!gRes1.ok) {
+            throw new Error('Gemini API Error: ' + (gData1.error ? gData1.error.message : JSON.stringify(gData1)));
+        }
+
+        let generatedSql = 'NO_SQL';
+        if (gData1.candidates && gData1.candidates.length > 0) {
+            generatedSql = gData1.candidates[0].content.parts[0].text.trim();
+        }
         generatedSql = generatedSql.replace(/```sql|```|;/g, '').trim();
 
         let queryResult = [];
@@ -74,26 +79,30 @@ export default async function handler(req, res) {
                 'และข้อมูลที่ได้จากฐานข้อมูล: ' + JSON.stringify(queryResult).slice(0, 3000) + ' ' +
                 'จงสรุปคำตอบเป็นภาษาไทยให้ชัดเจน กระชับ และสุภาพ';
 
-            const geminiRes2 = await fetch(geminiEndpoint, {
+            const gRes2 = await fetch(geminiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ parts: [{ text: promptAnswer }] }] })
             });
-            const geminiData2 = await geminiRes2.json();
-            const candidate2 = geminiData2.candidates ? geminiData2.candidates[0] : null;
-            const part2 = candidate2 && candidate2.content && candidate2.content.parts ? candidate2.content.parts[0] : null;
-            finalAnswer = part2 && part2.text ? part2.text : 'พบข้อมูลตามตารางด้านล่างครับ';
+            const gData2 = await gRes2.json();
+            if (gData2.candidates && gData2.candidates.length > 0) {
+                finalAnswer = gData2.candidates[0].content.parts[0].text;
+            } else {
+                finalAnswer = 'พบข้อมูลตามตารางด้านล่างครับ';
+            }
         } else {
             generatedSql = null;
-            const geminiGeneral = await fetch(geminiEndpoint, {
+            const gGeneral = await fetch(geminiUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ parts: [{ text: 'ตอบคำถามนี้ในฐานะผู้ช่วยระบบโรงแรมและทัวร์: ' + question }] }] })
             });
-            const generalData = await geminiGeneral.json();
-            const candidateGen = generalData.candidates ? generalData.candidates[0] : null;
-            const partGen = candidateGen && candidateGen.content && candidateGen.content.parts ? candidateGen.content.parts[0] : null;
-            finalAnswer = partGen && partGen.text ? partGen.text : 'สวัสดีครับ มีอะไรให้ช่วยไหมครับ';
+            const genData = await gGeneral.json();
+            if (genData.candidates && genData.candidates.length > 0) {
+                finalAnswer = genData.candidates[0].content.parts[0].text;
+            } else {
+                finalAnswer = 'สวัสดีครับ มีข้อมูลส่วนไหนของโรงแรมหรือทัวร์ให้ช่วยค้นหาไหมครับ';
+            }
         }
 
         await fetch(SUPABASE_URL + '/rest/v1/chat_logs', {
