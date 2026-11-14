@@ -1,5 +1,5 @@
 /* =========================================================
-   Hotel & Tour System - Ultimate Clickable Glass Theme
+   Hotel & Tour System - Luxury Dark Theme (Clickable)
    ========================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
@@ -32,7 +32,7 @@ body {
   position: relative;
 }
 
-/* ปลดล็อกแผ่นลอยบังการคลิก 100% */
+/* ปลดล็อก Layer ลอยบังเมาส์ 100% */
 body::before, body::after, div::before, div::after {
   pointer-events: none !important;
 }
