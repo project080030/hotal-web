@@ -1,6 +1,14 @@
 // ดึง Supabase Client จากที่ประกาศไว้ในโปรเจกต์เดิม
 // (ตัวอย่าง: const supabase = window.supabaseClient หรือ supabase.createClient)
 
+const { createClient } = window.supabase;
+const SUPABASE_URL = 'https://cbwywzbrijqlijwykxrb.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_jusl81rRe_vz1oYKATQkog__TSs2N9f';
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+document.addEventListener("DOMContentLoaded", () => {
+    // โค้ด loadRooms() และอื่นๆ...
+});
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("crud-form");
     const tableSelect = document.getElementById("table-select");
