@@ -1,60 +1,28 @@
 /* =========================================================
-   Hotel & Tour System - Agoda Travel Portal (Pure Clickable CSS)
-   ========================================================= */
-
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
-
-:root {
-  --agoda-blue: #5392f9;
-  --agoda-blue-dark: #2b6cb0;
-  --agoda-navy: #111e38;
-  --bg-light: #f0f4f8;
-  --card-white: #ffffff;
-  --text-dark: #2a2a2e;
-  --text-gray: #687176;
-  --border-color: #e0e6ed;
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08);
-  --radius-xl: 18px;
-  --radius-lg: 12px;/* =========================================================
-   HOTEL & TOUR SYSTEM - AGODA LUXURY PORTAL THEME (STRICT CSS)
+   HOTEL & TOUR SYSTEM - ULTIMATE AGODA ENTERPRISE STYLES
    ========================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Agoda Color Palette */
   --agoda-blue: #5392f9;
   --agoda-blue-dark: #2b6cb0;
   --agoda-navy: #111e38;
-  --agoda-accent: #ff567d;
-  
-  /* Status Colors */
-  --status-avail-bg: #e6f4ea;
-  --status-avail-text: #137333;
-  --status-occ-bg: #feefc3;
-  --status-occ-text: #b06000;
-  --status-maint-bg: #fce8e6;
-  --status-maint-text: #c5221f;
-
-  /* Layout Base */
   --bg-page: #f7f9fa;
   --card-bg: #ffffff;
   --text-dark: #2a2a2e;
   --text-muted: #687176;
   --border-light: #e0e6ed;
   
-  /* Radii & Shadows */
   --radius-xl: 20px;
   --radius-lg: 12px;
   --radius-md: 8px;
   --radius-pill: 50px;
-  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.08);
-  --shadow-hover: 0 12px 32px rgba(83, 146, 249, 0.25);
+  
+  --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.07);
+  --shadow-btn: 0 6px 18px rgba(83, 146, 249, 0.35);
 }
 
-/* ---------------------------------------------------------
-   GLOBAL RESET & BASE STYLES
-   --------------------------------------------------------- */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -66,13 +34,13 @@ body {
   background-color: var(--bg-page);
   color: var(--text-dark);
   min-height: 100vh;
+  padding-bottom: 5rem;
   position: relative;
-  overflow-x: hidden;
 }
 
-/* ---------------------------------------------------------
-   1. TOP NAVIGATION BAR
-   --------------------------------------------------------- */
+/* =========================================================
+   1. TOP NAVBAR (Sticky & Glass Accent)
+   ========================================================= */
 header.navbar {
   background-color: #ffffff !important;
   border-bottom: 1px solid var(--border-light) !important;
@@ -80,11 +48,11 @@ header.navbar {
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  height: 72px !important;
+  height: 76px !important;
   position: sticky !important;
   top: 0 !important;
   z-index: 1000 !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04) !important;
 }
 
 .nav-brand {
@@ -98,26 +66,29 @@ header.navbar {
   color: var(--agoda-blue);
 }
 
-.brand-text {
-  font-size: 1.25rem;
+.brand-title {
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--agoda-navy);
-  letter-spacing: -0.3px;
 }
 
-.nav-menu {
+.brand-title .highlight {
+  color: var(--agoda-blue);
+}
+
+.nav-links {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   background-color: #f1f5f9;
-  padding: 0.35rem;
+  padding: 0.4rem;
   border-radius: var(--radius-pill);
 }
 
-.nav-tab {
+.nav-btn {
   border: none;
   background: transparent;
-  padding: 0.55rem 1.25rem;
+  padding: 0.6rem 1.35rem;
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-muted);
@@ -126,49 +97,50 @@ header.navbar {
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
-.nav-tab:hover {
+.nav-btn:hover {
   color: var(--agoda-blue-dark);
+  background-color: rgba(83, 146, 249, 0.08);
 }
 
-.nav-tab.active {
+.nav-btn.active {
   background-color: var(--agoda-blue);
   color: #ffffff !important;
-  box-shadow: 0 4px 12px rgba(83, 146, 249, 0.3);
+  box-shadow: 0 4px 14px rgba(83, 146, 249, 0.35);
 }
 
-.nav-tab.ai-btn {
+.nav-btn.ai-btn {
   background: linear-gradient(135deg, #8b5cf6, #6366f1);
   color: #ffffff;
 }
 
-.user-profile {
+.nav-user {
   display: flex;
   align-items: center;
   gap: 1.25rem;
 }
 
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.user-email {
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
-.avatar {
-  font-size: 1.4rem;
+.user-email i {
   color: var(--agoda-blue);
+  font-size: 1.1rem;
 }
 
 .btn-logout {
   background-color: #ffe5e5;
   color: #e53e3e;
   border: none;
-  padding: 0.5rem 1.1rem;
+  padding: 0.55rem 1.2rem;
   border-radius: var(--radius-pill);
   font-size: 0.85rem;
   font-weight: 600;
@@ -184,12 +156,12 @@ header.navbar {
   color: #ffffff;
 }
 
-/* ---------------------------------------------------------
+/* =========================================================
    2. HERO BANNER
-   --------------------------------------------------------- */
+   ========================================================= */
 .hero-banner {
   width: 100%;
-  height: 220px;
+  height: 240px;
   background: linear-gradient(135deg, #0284c7 0%, #3b82f6 50%, #06b6d4 100%);
   display: flex;
   align-items: center;
@@ -200,37 +172,49 @@ header.navbar {
   position: relative;
 }
 
-.hero-title {
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-bottom: 0.3rem;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+.hero-badge {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  padding: 0.3rem 0.9rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.5px;
 }
 
-.hero-subtitle {
+.hero-container h1 {
+  font-size: 2.3rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.hero-container p {
   font-size: 1.05rem;
   font-weight: 300;
   opacity: 0.95;
 }
 
-/* ---------------------------------------------------------
-   3. MAIN LAYOUT & AGODA CARDS
-   --------------------------------------------------------- */
+/* =========================================================
+   3. MAIN CONTAINER & FLOATING CARDS
+   ========================================================= */
 .main-container {
-  max-width: 1200px;
-  margin: -50px auto 3rem auto;
+  max-width: 1240px;
+  margin: -55px auto 3rem auto;
   padding: 0 1.5rem;
   position: relative;
   z-index: 10;
 }
 
 .agoda-card {
-  background: var(--card-bg);
-  border-radius: var(--radius-xl);
-  padding: 2rem;
-  border: 1px solid rgba(224, 230, 237, 0.8);
-  box-shadow: var(--shadow-card);
-  margin-bottom: 2rem;
+  background: var(--card-bg) !important;
+  border-radius: var(--radius-xl) !important;
+  padding: 2.25rem !important;
+  border: 1px solid rgba(224, 230, 237, 0.9) !important;
+  box-shadow: var(--shadow-card) !important;
+  margin-bottom: 2rem !important;
 }
 
 .card-header {
@@ -240,80 +224,91 @@ header.navbar {
   margin-bottom: 1.75rem;
   padding-bottom: 1.25rem;
   border-bottom: 1px solid var(--border-light);
+  gap: 1rem;
 }
 
-.card-title-group {
+.title-group {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.header-icon {
-  font-size: 1.6rem;
+.icon-box {
+  font-size: 1.5rem;
   color: var(--agoda-blue);
   background: #eef5ff;
-  padding: 0.75rem;
+  width: 52px;
+  height: 52px;
   border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.card-title-group h2 {
-  font-size: 1.3rem;
+.icon-box.alt {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.title-group h2 {
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--agoda-navy);
 }
 
-.card-title-group .subtitle {
+.subtitle, .badge-sub {
   font-size: 0.85rem;
   color: var(--text-muted);
 }
 
-/* Table Selector Box */
-.table-selector-box {
+/* SELECT BOX */
+.select-box {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   background-color: #f8fafc;
-  padding: 0.5rem 1rem;
+  padding: 0.55rem 1.1rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-light);
 }
 
-.table-selector-box label {
+.select-box label {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-muted);
 }
 
-.custom-select {
-  border: none;
-  background: transparent;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--agoda-blue-dark);
-  outline: none;
-  cursor: pointer;
+.select-box select {
+  border: none !important;
+  background: transparent !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  color: var(--agoda-blue-dark) !important;
+  outline: none !important;
+  cursor: pointer !important;
+  margin-bottom: 0 !important;
 }
 
-/* ---------------------------------------------------------
-   4. FORM INPUTS & BUTTONS
-   --------------------------------------------------------- */
+/* =========================================================
+   4. FORM INPUTS & BUTTONS (Interactive & Clickable 100%)
+   ========================================================= */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.25rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
 }
 
-.form-field label {
+.form-group label {
   display: block;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.5px;
   margin-bottom: 0.4rem;
 }
 
-.input-wrapper {
+.input-icon-wrapper {
   position: relative;
   display: flex;
   align-items: center;
@@ -321,26 +316,28 @@ header.navbar {
 
 .input-icon {
   position: absolute;
-  left: 1rem;
+  left: 1.1rem;
   color: #a0aec0;
   font-size: 0.95rem;
+  pointer-events: none;
 }
 
-.input-wrapper input {
-  width: 100%;
-  padding: 0.8rem 1rem 0.8rem 2.6rem;
-  border: 1.5px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  font-size: 0.95rem;
-  color: var(--text-dark);
-  background-color: #ffffff;
-  transition: all 0.2s ease;
+.input-icon-wrapper input {
+  width: 100% !important;
+  padding: 0.85rem 1rem 0.85rem 2.8rem !important;
+  border: 1.5px solid var(--border-light) !important;
+  border-radius: var(--radius-lg) !important;
+  font-size: 0.95rem !important;
+  color: var(--text-dark) !important;
+  background-color: #ffffff !important;
+  transition: all 0.2s ease !important;
+  margin-bottom: 0 !important;
 }
 
-.input-wrapper input:focus {
-  border-color: var(--agoda-blue);
-  box-shadow: 0 0 0 4px rgba(83, 146, 249, 0.15);
-  outline: none;
+.input-icon-wrapper input:focus {
+  border-color: var(--agoda-blue) !important;
+  box-shadow: 0 0 0 4px rgba(83, 146, 249, 0.15) !important;
+  outline: none !important;
 }
 
 .form-actions {
@@ -348,362 +345,132 @@ header.navbar {
   gap: 1rem;
 }
 
-.btn-agoda-primary {
-  background: linear-gradient(135deg, #5392f9, #2b6cb0);
-  color: #ffffff;
-  border: none;
-  padding: 0.75rem 2rem;
-  border-radius: var(--radius-pill);
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
+button.btn-primary, button[type="submit"] {
+  background: linear-gradient(135deg, #5392f9, #2b6cb0) !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 0.8rem 2.2rem !important;
+  border-radius: var(--radius-pill) !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: var(--shadow-btn) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+button.btn-primary:hover, button[type="submit"]:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.05) !important;
+  box-shadow: 0 8px 22px rgba(83, 146, 249, 0.45) !important;
+}
+
+button.btn-secondary, button[type="reset"] {
+  background-color: #e2e8f0 !important;
+  color: var(--text-dark) !important;
+  border: none !important;
+  padding: 0.8rem 1.8rem !important;
+  border-radius: var(--radius-pill) !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  transition: background-color 0.2s ease;
+}
+
+button.btn-secondary:hover, button[type="reset"]:hover {
+  background-color: #cbd5e1 !important;
+}
+
+button.btn-refresh {
+  background: #eef5ff !important;
+  color: var(--agoda-blue-dark) !important;
+  border: 1px solid #cce0ff !important;
+  padding: 0.65rem 1.4rem !important;
+  border-radius: var(--radius-pill) !important;
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(83, 146, 249, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
-.btn-agoda-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(83, 146, 249, 0.45);
+button.btn-refresh:hover {
+  background: var(--agoda-blue) !important;
+  color: #ffffff !important;
 }
 
-.btn-agoda-secondary {
-  background-color: #e2e8f0;
-  color: var(--text-dark);
-  border: none;
-  padding: 0.75rem 1.75rem;
-  border-radius: var(--radius-pill);
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-agoda-secondary:hover {
-  background-color: #cbd5e1;
-}
-
-.btn-refresh {
-  background: #eef5ff;
-  color: var(--agoda-blue-dark);
-  border: 1px solid #cce0ff;
-  padding: 0.65rem 1.4rem;
-  border-radius: var(--radius-pill);
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-refresh:hover {
-  background: var(--agoda-blue);
-  color: #ffffff;
-}
-
-/* ---------------------------------------------------------
-   5. AGODA ENTERPRISE DATA TABLE
-   --------------------------------------------------------- */
+/* =========================================================
+   5. TABLES & DYNAMIC ACTION BUTTONS
+   ========================================================= */
 .table-responsive {
-  width: 100%;
-  overflow-x: auto;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
+  width: 100% !important;
+  overflow-x: auto !important;
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid var(--border-light) !important;
 }
 
 .agoda-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #ffffff;
-  font-size: 0.92rem;
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background-color: #ffffff !important;
+  font-size: 0.92rem !important;
 }
 
 .agoda-table th {
-  background-color: #f8fafc;
-  color: var(--text-muted);
-  font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.5px;
-  padding: 1rem 1.25rem;
-  border-bottom: 2px solid var(--border-light);
-  text-align: left;
+  background-color: #f8fafc !important;
+  color: var(--text-muted) !important;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.5px !important;
+  padding: 1rem 1.25rem !important;
+  border-bottom: 2px solid var(--border-light) !important;
+  text-align: left !important;
 }
 
 .agoda-table td {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--border-light);
-  color: var(--text-dark);
-  vertical-align: middle;
-}
-
-.agoda-table tr:hover {
-  background-color: #f7faef;
-}
-
-.action-btn-group {
-  display: flex;
-  gap: 0.4rem;
-  justify-content: center;
-}
-
-.btn-tbl-edit {
-  background-color: #eef5ff;
-  color: var(--agoda-blue-dark);
-  border: none;
-  padding: 0.4rem 0.85rem;
-  border-radius: var(--radius-md);
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn-tbl-edit:hover {
-  background-color: var(--agoda-blue);
-  color: #ffffff;
-}
-
-.btn-tbl-delete {
-  background-color: #ffe5e5;
-  color: #e53e3e;
-  border: none;
-  padding: 0.4rem 0.85rem;
-  border-radius: var(--radius-md);
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn-tbl-delete:hover {
-  background-color: #e53e3e;
-  color: #ffffff;
-}
-
-/* Badges */
-.id-badge {
-  background-color: #edf2f7;
-  padding: 0.2rem 0.6rem;
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-.room-num {
-  font-size: 1rem;
-  color: var(--agoda-navy);
-}
-
-.type-badge {
-  background-color: #e2e8f0;
-  padding: 0.25rem 0.65rem;
-  border-radius: 50%;
-  font-weight: 700;
-}
-
-.status-badge {
-  padding: 0.35rem 0.85rem;
-  border-radius: var(--radius-pill);
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: lowercase;
-}
-
-.status-avail { background-color: var(--status-avail-bg); color: var(--status-avail-text); }
-.status-occupied { background-color: var(--status-occ-bg); color: var(--status-occ-text); }
-.status-maint { background-color: var(--status-maint-bg); color: var(--status-maint-text); }
-.text-center { text-align: center !important; }
-  --radius-pill: 50px;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Kanit', 'Inter', -apple-system, sans-serif;
-}
-
-body {
-  background-color: var(--bg-light);
-  color: var(--text-dark);
-  min-height: 100vh;
-  padding-bottom: 4rem;
-}
-
-/* ---------------------------------------------------------
-   1. TOP NAVBAR
-   --------------------------------------------------------- */
-header, nav, .navbar, body > div:first-child {
-  background: #ffffff !important;
-  border-bottom: 1px solid var(--border-color) !important;
-  padding: 0.85rem 2.5rem !important;
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  gap: 1.5rem !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
-  width: 100% !important;
-  position: relative !important;
-  z-index: 100 !important;
-}
-
-header div, nav div, .navbar div {
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.75rem !important;
-  flex-wrap: nowrap !important;
-}
-
-header *, nav *, .navbar * {
-  color: var(--text-dark) !important;
-  font-weight: 500 !important;
-  font-size: 0.92rem !important;
-}
-
-/* ---------------------------------------------------------
-   2. MAIN CONTAINERS & CARDS
-   --------------------------------------------------------- */
-.container, main, body > div:not(:first-child) {
-  max-width: 1240px;
-  margin: 0 auto;
-}
-
-div[style*="background"], .card, section {
-  background: var(--card-white) !important;
-  border-radius: var(--radius-xl) !important;
-  padding: 2.25rem !important;
-  border: 1px solid rgba(224, 230, 237, 0.8) !important;
-  box-shadow: var(--shadow-lg) !important;
-  margin-top: 1.75rem !important;
-  margin-bottom: 1.75rem !important;
-}
-
-h1, h2, h3, h4, .title {
-  color: var(--agoda-navy) !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.3px !important;
-  margin-bottom: 1.25rem !important;
-}
-
-/* ---------------------------------------------------------
-   3. FORM INPUTS & DROPDOWNS (กรอกข้อมูลได้แน่นอน)
-   --------------------------------------------------------- */
-input[type="text"], 
-input[type="number"], 
-input[type="email"], 
-input[type="password"], 
-select, 
-textarea {
-  width: 100% !important;
-  padding: 0.8rem 1.1rem !important;
-  border: 1.5px solid var(--border-color) !important;
-  border-radius: var(--radius-lg) !important;
-  font-size: 0.95rem !important;
-  color: var(--text-dark) !important;
-  background-color: #ffffff !important;
-  transition: all 0.2s ease !important;
-  margin-bottom: 0.85rem !important;
-  cursor: text !important;
-}
-
-select {
-  cursor: pointer !important;
-}
-
-input:focus, select:focus, textarea:focus {
-  border-color: var(--agoda-blue) !important;
-  box-shadow: 0 0 0 4px rgba(83, 146, 249, 0.18) !important;
-  outline: none !important;
-}
-
-label {
-  font-size: 0.85rem !important;
-  font-weight: 600 !important;
-  color: var(--text-gray) !important;
-  margin-bottom: 0.4rem !important;
-  display: inline-block !important;
-}
-
-/* ---------------------------------------------------------
-   4. BUTTONS (กดปุ่มได้ชัวร์ 100%)
-   --------------------------------------------------------- */
-button, input[type="button"], input[type="submit"] {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0.5rem !important;
-  padding: 0.75rem 1.75rem !important;
-  font-family: 'Kanit', sans-serif !important;
-  font-size: 0.92rem !important;
-  font-weight: 600 !important;
-  border-radius: var(--radius-pill) !important;
-  border: none !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  background: linear-gradient(135deg, #5392f9, #2b6cb0) !important;
-  color: #ffffff !important;
-  box-shadow: 0 6px 18px rgba(83, 146, 249, 0.35) !important;
-  white-space: nowrap !important;
-}
-
-button:hover, input[type="button"]:hover, input[type="submit"]:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 22px rgba(83, 146, 249, 0.45) !important;
-  filter: brightness(1.05) !important;
-}
-
-button:active {
-  transform: translateY(0) !important;
-}
-
-/* ปุ่มรอง / ยกเลิก */
-button[class*="cancel"], button:contains("ยกเลิก") {
-  background: #e2e8f0 !important;
-  color: var(--text-dark) !important;
-  box-shadow: none !important;
-}
-
-/* ปุ่มลบ / ออกจากระบบ */
-button[class*="delete"], button[class*="danger"], button[class*="logout"], button:contains("ลบ"), button:contains("ออกจากระบบ") {
-  background: linear-gradient(135deg, #ff4d4f, #d9363e) !important;
-  box-shadow: 0 4px 14px rgba(255, 77, 79, 0.3) !important;
-}
-
-/* ปุ่มแก้ไข/ลบในตาราง */
-td button {
-  padding: 0.4rem 0.85rem !important;
-  font-size: 0.8rem !important;
-  border-radius: var(--radius-lg) !important;
-}
-
-/* ---------------------------------------------------------
-   5. TABLES
-   --------------------------------------------------------- */
-table {
-  width: 100% !important;
-  border-collapse: separate !important;
-  border-spacing: 0 !important;
-  margin-top: 1.25rem !important;
-  font-size: 0.9rem !important;
-  border-radius: var(--radius-lg) !important;
-  overflow: hidden !important;
-  border: 1px solid var(--border-color) !important;
-  background-color: #ffffff !important;
-}
-
-th {
-  background-color: #f1f5f9 !important;
-  color: var(--text-gray) !important;
-  font-weight: 600 !important;
-  font-size: 0.82rem !important;
-  text-transform: uppercase !important;
-  padding: 0.9rem 1.25rem !important;
-  border-bottom: 2px solid var(--border-color) !important;
-}
-
-td {
-  padding: 0.85rem 1.25rem !important;
-  border-bottom: 1px solid var(--border-color) !important;
+  padding: 1rem 1.25rem !important;
+  border-bottom: 1px solid var(--border-light) !important;
   color: var(--text-dark) !important;
   vertical-align: middle !important;
 }
 
-tr:hover td {
+.agoda-table tr:hover {
   background-color: #f8fafc !important;
+}
+
+/* ตกแต่งปุ่ม Action (แก้ไข / ลบ) ที่สร้างจาก app.js ดึงมาแสดง */
+td button {
+  padding: 0.45rem 0.9rem !important;
+  font-size: 0.8rem !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  margin-right: 0.35rem !important;
+  font-weight: 600 !important;
+  transition: filter 0.15s ease;
+}
+
+td button:hover {
+  filter: brightness(0.9);
+}
+
+button[onclick*="edit"], button.btn-edit {
+  background-color: #eef5ff !important;
+  color: var(--agoda-blue-dark) !important;
+}
+
+button[onclick*="delete"], button.btn-delete {
+  background-color: #ffe5e5 !important;
+  color: #e53e3e !important;
+}
+
+.text-center {
+  text-align: center !important;
 }
