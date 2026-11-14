@@ -1,176 +1,176 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hotel & Tour System - Luxury Agoda Portal</title>
-  <!-- Google Fonts: Kanit & Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
 
-  <!-- 1. TOP NAVBAR -->
-  <header class="navbar">
-    <div class="nav-brand">
-      <i class="fa-solid fa-hotel brand-icon"></i>
-      <span class="brand-text">Hotel & Tour System</span>
-    </div>
-    
-    <nav class="nav-menu">
-      <button class="nav-tab active"><i class="fa-solid fa-database"></i> จัดการข้อมูล (ทุกตาราง)</button>
-      <button class="nav-tab"><i class="fa-solid fa-chart-pie"></i> รายงานสรุป (6 Views)</button>
-      <button class="nav-tab ai-btn"><i class="fa-solid fa-robot"></i> AI ผู้ช่วยข้อมูล</button>
-    </nav>
+document.addEventListener("DOMContentLoaded", () => {
 
-    <div class="user-profile">
-      <div class="user-info">
-        <i class="fa-solid fa-circle-user avatar"></i>
-        <span class="user-email">admin@hotal.com</span>
-      </div>
-      <button class="btn-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> ออกจากระบบ</button>
-    </div>
-  </header>
+    const form = document.getElementById("crud-form");
+    const tableSelect = document.getElementById("table-select");
+    const refreshBtn = document.querySelector(".btn-refresh");
+    const tableBody = document.querySelector(".agoda-table tbody");
 
-  <!-- 2. HERO BANNER SECTION -->
-  <section class="hero-banner">
-    <div class="hero-content">
-      <h1 class="hero-title">ท่องโลกทั้งใบในราคาถูกลง</h1>
-      <p class="hero-subtitle">ระบบบริหารจัดการห้องพัก และการท่องเที่ยวแบบครบวงจร</p>
-    </div>
-  </section>
+    let editingId = null;
 
-  <!-- 3. MAIN CONTAINER -->
-  <main class="main-container">
+    // โหลดข้อมูล
+    async function loadRooms() {
+        try {
+            const response = await fetch("/api/rooms");
 
-    <!-- FLOATING CARD 1: FORM MANAGEMENTS -->
-    <div class="agoda-card">
-      <div class="card-header">
-        <div class="card-title-group">
-          <i class="fa-solid fa-sliders header-icon"></i>
-          <div>
-            <h2>จัดการข้อมูล (CRUD ทุกตาราง)</h2>
-            <p class="subtitle">เลือกตารางที่ต้องการเพิ่ม แก้ไข หรือลบข้อมูลในระบบ</p>
-          </div>
-        </div>
-        
-        <div class="table-selector-box">
-          <label for="table-select"><i class="fa-solid fa-table-cells"></i> ตารางข้อมูล</label>
-          <select id="table-select" class="custom-select">
-            <option value="rooms">rooms (ห้องพัก)</option>
-            <option value="room_types">room_types (ประเภทห้อง)</option>
-            <option value="bookings">bookings (การจอง)</option>
-            <option value="guests">guests (ผู้เข้าพัก)</option>
-          </select>
-        </div>
-      </div>
+            if (!response.ok) {
+                throw new Error("ไม่สามารถโหลดข้อมูลได้");
+            }
 
-      <!-- FORM FIELDS GRID -->
-      <form class="crud-form" id="crud-form" onsubmit="return false;">
-        <div class="form-grid">
-          <div class="form-field">
-            <label for="room_number">ROOM_NUMBER</label>
-            <div class="input-wrapper">
-              <i class="fa-solid fa-door-closed input-icon"></i>
-              <input type="text" id="room_number" placeholder="กรอกค่า room_number" autocomplete="off">
-            </div>
-          </div>
+            const data = await response.json();
 
-          <div class="form-field">
-            <label for="room_type_id">ROOM_TYPE_ID</label>
-            <div class="input-wrapper">
-              <i class="fa-solid fa-key input-icon"></i>
-              <input type="text" id="room_type_id" placeholder="กรอกค่า room_type_id" autocomplete="off">
-            </div>
-          </div>
+            tableBody.innerHTML = "";
 
-          <div class="form-field">
-            <label for="status">STATUS</label>
-            <div class="input-wrapper">
-              <i class="fa-solid fa-circle-check input-icon"></i>
-              <input type="text" id="status" placeholder="กรอกค่า status" autocomplete="off">
-            </div>
-          </div>
-        </div>
+            data.slice(0, 20).forEach(room => {
+                const tr = document.createElement("tr");
 
-        <div class="form-actions">
-          <button type="submit" class="btn-agoda-primary"><i class="fa-solid fa-plus"></i> เพิ่มข้อมูลใหม่</button>
-          <button type="reset" class="btn-agoda-secondary"><i class="fa-solid fa-xmark"></i> ยกเลิกการแก้ไข</button>
-        </div>
-      </form>
-    </div>
+                const values = [
+                    room.room_id,
+                    room.room_number,
+                    room.room_type_id,
+                    room.status
+                ];
 
-    <!-- FLOATING CARD 2: DATA TABLE -->
-    <div class="agoda-card">
-      <div class="card-header table-header-flex">
-        <div class="card-title-group">
-          <i class="fa-solid fa-list-check header-icon"></i>
-          <div>
-            <h2>ข้อมูลในตาราง: rooms</h2>
-            <span class="badge-count">(แสดง 20 แถวล่าสุด)</span>
-          </div>
-        </div>
-        <button class="btn-refresh"><i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล</button>
-      </div>
+                const action = document.createElement("td");
+                action.className = "text-center";
 
-      <div class="table-responsive">
-        <table class="agoda-table">
-          <thead>
-            <tr>
-              <th class="text-center" style="width: 140px;">จัดการ</th>
-              <th>ROOM_ID</th>
-              <th>ROOM_NUMBER</th>
-              <th>ROOM_TYPE_ID</th>
-              <th>STATUS</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="text-center">
-                <div class="action-btn-group">
-                  <button class="btn-tbl-edit"><i class="fa-solid fa-pen"></i> แก้ไข</button>
-                  <button class="btn-tbl-delete"><i class="fa-solid fa-trash"></i> ลบ</button>
-                </div>
-              </td>
-              <td><span class="id-badge">70</span></td>
-              <td><strong class="room-num">710</strong></td>
-              <td><span class="type-badge">4</span></td>
-              <td><span class="status-badge status-maint">maintenance</span></td>
-            </tr>
-            <tr>
-              <td class="text-center">
-                <div class="action-btn-group">
-                  <button class="btn-tbl-edit"><i class="fa-solid fa-pen"></i> แก้ไข</button>
-                  <button class="btn-tbl-delete"><i class="fa-solid fa-trash"></i> ลบ</button>
-                </div>
-              </td>
-              <td><span class="id-badge">69</span></td>
-              <td><strong class="room-num">709</strong></td>
-              <td><span class="type-badge">3</span></td>
-              <td><span class="status-badge status-occupied">occupied</span></td>
-            </tr>
-            <tr>
-              <td class="text-center">
-                <div class="action-btn-group">
-                  <button class="btn-tbl-edit"><i class="fa-solid fa-pen"></i> แก้ไข</button>
-                  <button class="btn-tbl-delete"><i class="fa-solid fa-trash"></i> ลบ</button>
-                </div>
-              </td>
-              <td><span class="id-badge">68</span></td>
-              <td><strong class="room-num">708</strong></td>
-              <td><span class="type-badge">1</span></td>
-              <td><span class="status-badge status-avail">available</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+                const group = document.createElement("div");
+                group.className = "action-btn-group";
 
-  </main>
+                const editBtn = document.createElement("button");
+                editBtn.type = "button";
+                editBtn.className = "btn-tbl-edit";
+                editBtn.textContent = "แก้ไข";
 
-</body>
-</html>
+                editBtn.addEventListener("click", () => {
+                    editingId = room.room_id;
+
+                    document.getElementById("room_number").value =
+                        room.room_number ?? "";
+
+                    document.getElementById("room_type_id").value =
+                        room.room_type_id ?? "";
+
+                    document.getElementById("status").value =
+                        room.status ?? "";
+
+                    document.querySelector(
+                        ".btn-agoda-primary"
+                    ).innerHTML = "บันทึกการแก้ไข";
+                });
+
+                const deleteBtn = document.createElement("button");
+                deleteBtn.type = "button";
+                deleteBtn.className = "btn-tbl-delete";
+                deleteBtn.textContent = "ลบ";
+
+                deleteBtn.addEventListener("click", async () => {
+                    if (!confirm("ต้องการลบข้อมูลนี้หรือไม่?")) return;
+
+                    try {
+                        const result = await fetch(
+                            `/api/rooms/${room.room_id}`,
+                            { method: "DELETE" }
+                        );
+
+                        if (!result.ok) {
+                            throw new Error("ลบข้อมูลไม่สำเร็จ");
+                        }
+
+                        alert("ลบข้อมูลสำเร็จ");
+                        loadRooms();
+
+                    } catch (error) {
+                        alert(error.message);
+                    }
+                });
+
+                group.append(editBtn, deleteBtn);
+                action.appendChild(group);
+                tr.appendChild(action);
+
+                values.forEach(value => {
+                    const td = document.createElement("td");
+                    td.textContent = value ?? "-";
+                    tr.appendChild(td);
+                });
+
+                tableBody.appendChild(tr);
+            });
+
+        } catch (error) {
+            console.error(error);
+            alert("โหลดข้อมูลไม่สำเร็จ: " + error.message);
+        }
+    }
+
+    // เพิ่มและแก้ไขข้อมูล
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const payload = {
+            room_number: document.getElementById("room_number").value,
+            room_type_id: document.getElementById("room_type_id").value,
+            status: document.getElementById("status").value
+        };
+
+        if (!payload.room_number || !payload.room_type_id || !payload.status) {
+            alert("กรุณากรอกข้อมูลให้ครบ");
+            return;
+        }
+
+        try {
+            const url = editingId
+                ? `/api/rooms/${editingId}`
+                : "/api/rooms";
+
+            const response = await fetch(url, {
+                method: editingId ? "PUT" : "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error("บันทึกข้อมูลไม่สำเร็จ");
+            }
+
+            alert(editingId ? "แก้ไขข้อมูลสำเร็จ" : "เพิ่มข้อมูลสำเร็จ");
+
+            editingId = null;
+            form.reset();
+
+            document.querySelector(
+                ".btn-agoda-primary"
+            ).innerHTML = "เพิ่มข้อมูลใหม่";
+
+            loadRooms();
+
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+
+    // ยกเลิกการแก้ไข
+    form.addEventListener("reset", () => {
+        editingId = null;
+
+        document.querySelector(
+            ".btn-agoda-primary"
+        ).innerHTML = "เพิ่มข้อมูลใหม่";
+    });
+
+    // รีเฟรช
+    refreshBtn.addEventListener("click", loadRooms);
+
+    // เปลี่ยนตาราง
+    tableSelect.addEventListener("change", () => {
+        alert("ตารางที่เลือก: " + tableSelect.value +
+              " — ต้องตั้งค่า API ของตารางนี้เพิ่มเติม");
+    });
+
+    // เริ่มต้น
+    loadRooms();
+
+});
