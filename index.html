@@ -3,63 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hotel & Tour System - Enterprise Agoda Portal</title>
-  
-  <!-- Google Fonts: Kanit & Inter -->
+  <title>Hotel & Tour System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- FontAwesome 6 Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- TOP NAVBAR -->
-  <header class="navbar">
-    <div class="nav-brand">
-      <i class="fa-solid fa-hotel brand-icon"></i>
-      <span class="brand-title">Hotel & Tour <span class="highlight">System</span></span>
+  <!-- HEADER NAVBAR -->
+  <div style="background: #0f172a; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;">
+    <div style="font-size: 1.2rem; font-weight: bold;">🏨 Hotel & Tour System</div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <button id="btn-tab-crud" style="padding: 6px 16px; background: #2563eb; color: white; border: none; border-radius: 20px; cursor: pointer;">จัดการข้อมูล (ทุกตาราง)</button>
+      <button id="btn-tab-report" style="padding: 6px 16px; background: #3b82f6; color: white; border: none; border-radius: 20px; cursor: pointer;">รายงานสรุป (6 Views)</button>
+      <button id="btn-tab-ai" style="padding: 6px 16px; background: #8b5cf6; color: white; border: none; border-radius: 20px; cursor: pointer;">🤖 AI ผู้ช่วยข้อมูล</button>
+      <span id="user-email" style="font-size: 0.9rem; margin-left: 10px;">admin@hotal.com</span>
+      <button id="btn-logout" style="padding: 6px 16px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer;">ออกจากระบบ</button>
     </div>
+  </div>
+
+  <!-- HERO TITLE BANNER -->
+  <div style="background: linear-gradient(135deg, #0284c7, #3b82f6); color: white; text-align: center; padding: 2.5rem 1rem;">
+    <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">Hotel & Tour Management System</h1>
+    <p style="opacity: 0.9; font-weight: 300;">ระบบบริหารจัดการห้องพัก และการท่องเที่ยวแบบครบวงจร</p>
+  </div>
+
+  <!-- MAIN CONTAINER -->
+  <div style="max-width: 1100px; margin: -30px auto 2rem auto; padding: 0 1rem; position: relative; z-index: 10;">
     
-    <div class="nav-links">
-      <button class="nav-btn active"><i class="fa-solid fa-database"></i> จัดการข้อมูล (ทุกตาราง)</button>
-      <button class="nav-btn"><i class="fa-solid fa-chart-line"></i> รายงานสรุป (6 Views)</button>
-      <button class="nav-btn ai-btn"><i class="fa-solid fa-robot"></i> AI ผู้ช่วยข้อมูล</button>
-    </div>
-
-    <div class="nav-user">
-      <span class="user-email"><i class="fa-solid fa-circle-user"></i> admin@hotal.com</span>
-      <button class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> ออกจากระบบ</button>
-    </div>
-  </header>
-
-  <!-- HERO BANNER -->
-  <section class="hero-banner">
-    <div class="hero-container">
-      <h1>ท่องโลกทั้งใบในราคาถูกลง</h1>
-      <p>ระบบบริหารจัดการห้องพัก และการท่องเที่ยวระดับองค์กร (Agoda Luxury Edition)</p>
-    </div>
-  </section>
-
-  <!-- MAIN CONTENT CONTAINER -->
-  <main class="main-container">
-
-    <!-- FLOATING CARD 1: FORM CRUD -->
-    <div class="card agoda-card">
-      <div class="card-header">
-        <div class="title-group">
-          <div class="icon-box"><i class="fa-solid fa-sliders"></i></div>
-          <div>
-            <h2>จัดการข้อมูล (CRUD ทุกตาราง)</h2>
-            <p class="subtitle">เลือกตารางด้านขวาเพื่อจัดการข้อมูลในระบบ</p>
-          </div>
-        </div>
-
-        <div class="select-box">
-          <label for="table-select"><i class="fa-solid fa-table-cells"></i> เลือกตาราง:</label>
-          <select id="table-select">
+    <!-- CARD 1: FORM CRUD -->
+    <div style="background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="font-size: 1.2rem; color: #1e293b;">จัดการข้อมูล (CRUD ทุกตาราง)</h3>
+        <div>
+          <label style="font-size: 0.9rem; color: #64748b;">ตาราง: </label>
+          <select id="table-select" style="padding: 6px 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
             <option value="rooms">rooms (ห้องพัก)</option>
             <option value="room_types">room_types (ประเภทห้อง)</option>
             <option value="bookings">bookings (การจอง)</option>
@@ -68,73 +47,56 @@
         </div>
       </div>
 
-      <!-- FORM FIELDS (คง ID เดิมไว้ครบถ้วนเพื่อไม่ให้ JS พัง) -->
+      <!-- FORM FIELDS -->
       <form id="crud-form" onsubmit="return false;">
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="room_number">ROOM_NUMBER</label>
-            <div class="input-icon-wrapper">
-              <i class="fa-solid fa-door-closed input-icon"></i>
-              <input type="text" id="room_number" placeholder="กรอกค่า room_number" autocomplete="off">
-            </div>
+        <div id="form-fields" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <label style="font-size: 0.8rem; color: #64748b; display: block; margin-bottom: 4px;">room_number</label>
+            <input type="text" id="room_number" placeholder="กรอกค่า room_number" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px;">
           </div>
-
-          <div class="form-group">
-            <label for="room_type_id">ROOM_TYPE_ID</label>
-            <div class="input-icon-wrapper">
-              <i class="fa-solid fa-key input-icon"></i>
-              <input type="text" id="room_type_id" placeholder="กรอกค่า room_type_id" autocomplete="off">
-            </div>
+          <div>
+            <label style="font-size: 0.8rem; color: #64748b; display: block; margin-bottom: 4px;">room_type_id</label>
+            <input type="text" id="room_type_id" placeholder="กรอกค่า room_type_id" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px;">
           </div>
-
-          <div class="form-group">
-            <label for="status">STATUS</label>
-            <div class="input-icon-wrapper">
-              <i class="fa-solid fa-circle-check input-icon"></i>
-              <input type="text" id="status" placeholder="กรอกค่า status" autocomplete="off">
-            </div>
+          <div>
+            <label style="font-size: 0.8rem; color: #64748b; display: block; margin-bottom: 4px;">status</label>
+            <input type="text" id="status" placeholder="กรอกค่า status" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px;">
           </div>
         </div>
 
-        <div class="form-actions">
-          <button type="submit" class="btn-primary"><i class="fa-solid fa-plus"></i> เพิ่มข้อมูลใหม่</button>
-          <button type="reset" class="btn-secondary"><i class="fa-solid fa-xmark"></i> ยกเลิกการแก้ไข</button>
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" id="btn-submit" style="padding: 8px 20px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer;">+ เพิ่มข้อมูลใหม่</button>
+          <button type="button" id="btn-cancel" style="padding: 8px 20px; background: #94a3b8; color: white; border: none; border-radius: 8px; cursor: pointer;">✕ ยกเลิกการแก้ไข</button>
         </div>
       </form>
     </div>
 
-    <!-- FLOATING CARD 2: TABLE DATA -->
-    <div class="card agoda-card">
-      <div class="card-header table-card-header">
-        <div class="title-group">
-          <div class="icon-box alt"><i class="fa-solid fa-list-check"></i></div>
-          <div>
-            <h2>ข้อมูลในตาราง: <span id="current-table-name">rooms</span></h2>
-            <span class="badge-sub">(แสดง 20 แถวล่าสุด)</span>
-          </div>
-        </div>
-        <button class="btn-refresh" id="btn-refresh"><i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล</button>
+    <!-- CARD 2: TABLE -->
+    <div style="background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="font-size: 1.1rem; color: #1e293b;">ข้อมูลในตาราง: <span id="current-table-title">rooms</span> (แสดง 20 แถวล่าสุด)</h3>
+        <button id="btn-refresh" style="padding: 6px 14px; background: #0284c7; color: white; border: none; border-radius: 8px; cursor: pointer;">🔄 รีเฟรชข้อมูล</button>
       </div>
 
-      <div class="table-responsive">
-        <table class="agoda-table">
+      <div style="overflow-x: auto;">
+        <table id="data-table" style="width: 100%; border-collapse: collapse;">
           <thead>
-            <tr>
-              <th class="text-center" style="width: 150px;">จัดการ</th>
-              <th>ROOM_ID</th>
-              <th>ROOM_NUMBER</th>
-              <th>ROOM_TYPE_ID</th>
-              <th>STATUS</th>
+            <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left;">
+              <th style="padding: 10px;">จัดการ</th>
+              <th style="padding: 10px;">ROOM_ID</th>
+              <th style="padding: 10px;">ROOM_NUMBER</th>
+              <th style="padding: 10px;">ROOM_TYPE_ID</th>
+              <th style="padding: 10px;">STATUS</th>
             </tr>
           </thead>
           <tbody id="table-body">
-            <!-- ข้อมูลจาก app.js จะถูกสร้างแทรกในนี้ตามปกติ -->
+            <!-- ข้อมูลดึงจาก JS -->
           </tbody>
         </table>
       </div>
     </div>
 
-  </main>
+  </div>
 
   <script src="app.js"></script>
 </body>
