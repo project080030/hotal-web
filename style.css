@@ -19,8 +19,8 @@
   --radius-md: 8px;
   --radius-pill: 50px;
   
-  --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.07);
-  --shadow-btn: 0 6px 18px rgba(83, 146, 249, 0.35);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.07);
+  --shadow-btn: 0 4px 14px rgba(83, 146, 249, 0.35);
 }
 
 * {
@@ -34,13 +34,10 @@ body {
   background-color: var(--bg-page);
   color: var(--text-dark);
   min-height: 100vh;
-  padding-bottom: 5rem;
-  position: relative;
+  padding-bottom: 4rem;
 }
 
-/* =========================================================
-   1. TOP NAVBAR (Sticky & Glass Accent)
-   ========================================================= */
+/* 1. TOP NAVBAR */
 header.navbar {
   background-color: #ffffff !important;
   border-bottom: 1px solid var(--border-light) !important;
@@ -48,11 +45,11 @@ header.navbar {
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  height: 76px !important;
+  height: 72px !important;
   position: sticky !important;
   top: 0 !important;
   z-index: 1000 !important;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.04) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03) !important;
 }
 
 .nav-brand {
@@ -67,7 +64,7 @@ header.navbar {
 }
 
 .brand-title {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--agoda-navy);
 }
@@ -81,14 +78,14 @@ header.navbar {
   align-items: center;
   gap: 0.5rem;
   background-color: #f1f5f9;
-  padding: 0.4rem;
+  padding: 0.35rem;
   border-radius: var(--radius-pill);
 }
 
 .nav-btn {
   border: none;
   background: transparent;
-  padding: 0.6rem 1.35rem;
+  padding: 0.55rem 1.25rem;
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-muted);
@@ -97,18 +94,17 @@ header.navbar {
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .nav-btn:hover {
   color: var(--agoda-blue-dark);
-  background-color: rgba(83, 146, 249, 0.08);
 }
 
 .nav-btn.active {
   background-color: var(--agoda-blue);
   color: #ffffff !important;
-  box-shadow: 0 4px 14px rgba(83, 146, 249, 0.35);
+  box-shadow: 0 4px 12px rgba(83, 146, 249, 0.3);
 }
 
 .nav-btn.ai-btn {
@@ -126,29 +122,18 @@ header.navbar {
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-dark);
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.user-email i {
-  color: var(--agoda-blue);
-  font-size: 1.1rem;
 }
 
 .btn-logout {
   background-color: #ffe5e5;
   color: #e53e3e;
   border: none;
-  padding: 0.55rem 1.2rem;
+  padding: 0.55rem 1.15rem;
   border-radius: var(--radius-pill);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
 }
 
 .btn-logout:hover {
@@ -156,12 +141,10 @@ header.navbar {
   color: #ffffff;
 }
 
-/* =========================================================
-   2. HERO BANNER
-   ========================================================= */
+/* 2. HERO BANNER */
 .hero-banner {
   width: 100%;
-  height: 240px;
+  height: 220px;
   background: linear-gradient(135deg, #0284c7 0%, #3b82f6 50%, #06b6d4 100%);
   display: flex;
   align-items: center;
@@ -169,26 +152,13 @@ header.navbar {
   text-align: center;
   color: #ffffff;
   padding: 0 1.5rem;
-  position: relative;
-}
-
-.hero-badge {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(8px);
-  padding: 0.3rem 0.9rem;
-  border-radius: var(--radius-pill);
-  font-size: 0.78rem;
-  font-weight: 600;
-  display: inline-block;
-  margin-bottom: 0.75rem;
-  letter-spacing: 0.5px;
 }
 
 .hero-container h1 {
-  font-size: 2.3rem;
+  font-size: 2.2rem;
   font-weight: 700;
   margin-bottom: 0.3rem;
-  text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 .hero-container p {
@@ -197,12 +167,10 @@ header.navbar {
   opacity: 0.95;
 }
 
-/* =========================================================
-   3. MAIN CONTAINER & FLOATING CARDS
-   ========================================================= */
+/* 3. MAIN CONTAINER & CARDS */
 .main-container {
-  max-width: 1240px;
-  margin: -55px auto 3rem auto;
+  max-width: 1200px;
+  margin: -50px auto 3rem auto;
   padding: 0 1.5rem;
   position: relative;
   z-index: 10;
@@ -211,8 +179,8 @@ header.navbar {
 .agoda-card {
   background: var(--card-bg) !important;
   border-radius: var(--radius-xl) !important;
-  padding: 2.25rem !important;
-  border: 1px solid rgba(224, 230, 237, 0.9) !important;
+  padding: 2rem !important;
+  border: 1px solid rgba(224, 230, 237, 0.8) !important;
   box-shadow: var(--shadow-card) !important;
   margin-bottom: 2rem !important;
 }
@@ -224,7 +192,6 @@ header.navbar {
   margin-bottom: 1.75rem;
   padding-bottom: 1.25rem;
   border-bottom: 1px solid var(--border-light);
-  gap: 1rem;
 }
 
 .title-group {
@@ -237,8 +204,8 @@ header.navbar {
   font-size: 1.5rem;
   color: var(--agoda-blue);
   background: #eef5ff;
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
@@ -251,7 +218,7 @@ header.navbar {
 }
 
 .title-group h2 {
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--agoda-navy);
 }
@@ -267,7 +234,7 @@ header.navbar {
   align-items: center;
   gap: 0.75rem;
   background-color: #f8fafc;
-  padding: 0.55rem 1.1rem;
+  padding: 0.5rem 1rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-light);
 }
@@ -289,19 +256,17 @@ header.navbar {
   margin-bottom: 0 !important;
 }
 
-/* =========================================================
-   4. FORM INPUTS & BUTTONS (Interactive & Clickable 100%)
-   ========================================================= */
+/* 4. FORM INPUTS & BUTTONS */
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.25rem;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .form-group label {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-muted);
   letter-spacing: 0.5px;
@@ -316,7 +281,7 @@ header.navbar {
 
 .input-icon {
   position: absolute;
-  left: 1.1rem;
+  left: 1rem;
   color: #a0aec0;
   font-size: 0.95rem;
   pointer-events: none;
@@ -324,7 +289,7 @@ header.navbar {
 
 .input-icon-wrapper input {
   width: 100% !important;
-  padding: 0.85rem 1rem 0.85rem 2.8rem !important;
+  padding: 0.8rem 1rem 0.8rem 2.6rem !important;
   border: 1.5px solid var(--border-light) !important;
   border-radius: var(--radius-lg) !important;
   font-size: 0.95rem !important;
@@ -349,7 +314,7 @@ button.btn-primary, button[type="submit"] {
   background: linear-gradient(135deg, #5392f9, #2b6cb0) !important;
   color: #ffffff !important;
   border: none !important;
-  padding: 0.8rem 2.2rem !important;
+  padding: 0.75rem 2rem !important;
   border-radius: var(--radius-pill) !important;
   font-size: 0.95rem !important;
   font-weight: 600 !important;
@@ -364,24 +329,18 @@ button.btn-primary, button[type="submit"] {
 button.btn-primary:hover, button[type="submit"]:hover {
   transform: translateY(-2px) !important;
   filter: brightness(1.05) !important;
-  box-shadow: 0 8px 22px rgba(83, 146, 249, 0.45) !important;
 }
 
 button.btn-secondary, button[type="reset"] {
   background-color: #e2e8f0 !important;
   color: var(--text-dark) !important;
   border: none !important;
-  padding: 0.8rem 1.8rem !important;
+  padding: 0.75rem 1.75rem !important;
   border-radius: var(--radius-pill) !important;
   font-size: 0.95rem !important;
   font-weight: 600 !important;
   cursor: pointer !important;
   box-shadow: none !important;
-  transition: background-color 0.2s ease;
-}
-
-button.btn-secondary:hover, button[type="reset"]:hover {
-  background-color: #cbd5e1 !important;
 }
 
 button.btn-refresh {
@@ -394,10 +353,6 @@ button.btn-refresh {
   font-weight: 600 !important;
   cursor: pointer !important;
   box-shadow: none !important;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
 }
 
 button.btn-refresh:hover {
@@ -405,9 +360,7 @@ button.btn-refresh:hover {
   color: #ffffff !important;
 }
 
-/* =========================================================
-   5. TABLES & DYNAMIC ACTION BUTTONS
-   ========================================================= */
+/* 5. TABLES & DYNAMIC BUTTONS */
 .table-responsive {
   width: 100% !important;
   overflow-x: auto !important;
@@ -434,7 +387,7 @@ button.btn-refresh:hover {
 }
 
 .agoda-table td {
-  padding: 1rem 1.25rem !important;
+  padding: 0.9rem 1.25rem !important;
   border-bottom: 1px solid var(--border-light) !important;
   color: var(--text-dark) !important;
   vertical-align: middle !important;
@@ -444,21 +397,15 @@ button.btn-refresh:hover {
   background-color: #f8fafc !important;
 }
 
-/* ตกแต่งปุ่ม Action (แก้ไข / ลบ) ที่สร้างจาก app.js ดึงมาแสดง */
+/* ตกแต่งปุ่มแก้ไข/ลบ ที่สร้างจาก JavaScript */
 td button {
-  padding: 0.45rem 0.9rem !important;
+  padding: 0.4rem 0.85rem !important;
   font-size: 0.8rem !important;
   border-radius: var(--radius-md) !important;
   box-shadow: none !important;
   border: none !important;
   cursor: pointer !important;
-  margin-right: 0.35rem !important;
-  font-weight: 600 !important;
-  transition: filter 0.15s ease;
-}
-
-td button:hover {
-  filter: brightness(0.9);
+  margin-right: 0.3rem !important;
 }
 
 button[onclick*="edit"], button.btn-edit {
