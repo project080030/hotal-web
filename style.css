@@ -1,16 +1,20 @@
 /* =========================================================
-   Hotel & Tour System - Ultimate Clickable Fix
+   Hotel & Tour System - Ultimate Clickable Glass Theme
    ========================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --primary-blue: #5392f9;
+  --agoda-blue: #5392f9;
+  --agoda-blue-dark: #2b6cb0;
   --bg-dark: #0b0f17;
   --panel-bg: #121a2b;
-  --border-color: rgba(255, 255, 255, 0.1);
+  --border-color: rgba(255, 255, 255, 0.12);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
+  --radius-xl: 18px;
+  --radius-lg: 12px;
+  --radius-pill: 50px;
 }
 
 * {
@@ -24,102 +28,253 @@ body {
   background-color: var(--bg-dark);
   color: var(--text-main);
   min-height: 100vh;
+  padding-bottom: 4rem;
   position: relative;
 }
 
-/* 1. ปลดล็อกแผ่น Overlay ลอยบังการคลิก (สำคัญมาก!) */
+/* ปลดล็อกแผ่นลอยบังการคลิก 100% */
 body::before, body::after, div::before, div::after {
   pointer-events: none !important;
 }
 
-/* 2. TOP NAVBAR (ดัน z-index ให้กดปุ่มด้านบนได้ 100%) */
-header, nav, .navbar {
+/* 1. TOP NAVBAR */
+header.navbar {
   background: #0f172a !important;
-  padding: 0.85rem 2rem !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  padding: 0.85rem 2.5rem !important;
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
   position: relative !important;
   z-index: 1000 !important;
-  border-bottom: 1px solid var(--border-color) !important;
 }
 
-/* 3. CARDS & PANELS (ดัน z-index ให้กรอกข้อมูลได้) */
-.container, main, body > div:not(:first-child) {
-  max-width: 1240px;
-  margin: 0 auto;
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-icon {
+  font-size: 1.6rem;
+  color: var(--agoda-blue);
+}
+
+.brand-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.35rem;
+  border-radius: var(--radius-pill);
+}
+
+.nav-btn {
+  border: none;
+  background: transparent;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+}
+
+.nav-btn.active {
+  background: var(--agoda-blue);
+  color: #ffffff;
+}
+
+.nav-btn.ai-btn {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: #ffffff;
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-email {
+  font-size: 0.88rem;
+  color: var(--text-main);
+}
+
+.btn-logout {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 0.45rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* 2. HERO BANNER */
+.hero-banner {
+  background: linear-gradient(135deg, #0284c7 0%, #3b82f6 50%, #06b6d4 100%);
+  color: white;
+  text-align: center;
+  padding: 3rem 1.5rem 4rem 1.5rem;
+}
+
+.hero-container h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.hero-container p {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* 3. MAIN CARDS */
+.main-container {
+  max-width: 1200px;
+  margin: -40px auto 3rem auto;
+  padding: 0 1.5rem;
   position: relative !important;
   z-index: 10 !important;
 }
 
-div[style*="background"], .card, section {
+.agoda-card {
   background: var(--panel-bg) !important;
-  border-radius: 16px !important;
+  border-radius: var(--radius-xl) !important;
   padding: 2rem !important;
   border: 1px solid var(--border-color) !important;
-  margin-top: 1.5rem !important;
-  margin-bottom: 1.5rem !important;
+  margin-bottom: 2rem !important;
   position: relative !important;
   z-index: 10 !important;
 }
 
-/* 4. INPUTS (ให้พิมพ์ข้อมูลได้แน่นอน) */
-input[type="text"], 
-input[type="number"], 
-input[type="email"], 
-input[type="password"], 
-select, 
-textarea {
-  width: 100% !important;
-  padding: 0.75rem 1rem !important;
-  border: 1px solid var(--border-color) !important;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.icon-box {
+  font-size: 1.4rem;
+  color: var(--agoda-blue);
+  background: rgba(83, 146, 249, 0.15);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-box.alt {
+  background: rgba(6, 182, 212, 0.15);
+  color: #06b6d4;
+}
+
+.subtitle, .badge-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.select-box {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.custom-select {
+  padding: 0.5rem 1rem !important;
   border-radius: 8px !important;
-  font-size: 0.95rem !important;
+  background-color: rgba(15, 23, 42, 0.9) !important;
   color: #ffffff !important;
+  border: 1px solid var(--border-color) !important;
+  outline: none;
+  cursor: pointer !important;
+}
+
+/* 4. FORMS & INPUTS */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.input-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.input-icon-wrapper input {
+  width: 100% !important;
+  padding: 0.75rem 1rem 0.75rem 2.6rem !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-lg) !important;
   background-color: rgba(15, 23, 42, 0.8) !important;
+  color: #ffffff !important;
+  font-size: 0.95rem !important;
   position: relative !important;
   z-index: 20 !important;
   pointer-events: auto !important;
-  cursor: text !important;
 }
 
-select {
-  cursor: pointer !important;
+.form-actions {
+  display: flex;
+  gap: 1rem;
 }
 
-/* 5. BUTTONS (กดปุ่มเพิ่ม/แก้ไข/ลบ/รีเฟรชได้ 100%) */
 button, input[type="button"], input[type="submit"] {
   display: inline-flex !important;
   align-items: center !important;
-  justify-content: center !important;
   gap: 0.5rem !important;
-  padding: 0.65rem 1.4rem !important;
+  padding: 0.65rem 1.6rem !important;
   font-size: 0.9rem !important;
-  font-weight: 500 !important;
-  border-radius: 30px !important;
+  font-weight: 600 !important;
+  border-radius: var(--radius-pill) !important;
   border: none !important;
   cursor: pointer !important;
-  background: linear-gradient(135deg, #5392f9, #2b6cb0) !important;
-  color: #ffffff !important;
   position: relative !important;
   z-index: 30 !important;
   pointer-events: auto !important;
 }
 
-button:hover {
-  filter: brightness(1.1) !important;
+.btn-agoda-primary {
+  background: linear-gradient(135deg, #5392f9, #2b6cb0) !important;
+  color: #ffffff !important;
 }
 
-/* 6. TABLES */
-table {
-  width: 100% !important;
-  border-collapse: collapse !important;
-  margin-top: 1rem !important;
-  font-size: 0.9rem !important;
+.btn-agoda-secondary {
+  background: #334155 !important;
+  color: #ffffff !important;
 }
 
-th, td {
-  padding: 0.85rem 1rem !important;
-  border-bottom: 1px solid var(--border-color) !important;
-  text-align: left !important;
-}
+.btn-refresh {
+  background: rgba(83, 146, 249, 0.15) !important;
