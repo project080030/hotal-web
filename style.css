@@ -1,5 +1,5 @@
 /* =========================================================
-   Hotel & Tour System - Agoda Travel Portal Vibe (Clickable Fix)
+   Hotel & Tour System - Agoda Travel Portal (Pure Clickable CSS)
    ========================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -8,13 +8,13 @@
   --agoda-blue: #5392f9;
   --agoda-blue-dark: #2b6cb0;
   --agoda-navy: #111e38;
-  --bg-light: #f7f9fa;
+  --bg-light: #f0f4f8;
   --card-white: #ffffff;
   --text-dark: #2a2a2e;
   --text-gray: #687176;
   --border-color: #e0e6ed;
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
-  --radius-xl: 20px;
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --radius-xl: 18px;
   --radius-lg: 12px;
   --radius-pill: 50px;
 }
@@ -31,27 +31,10 @@ body {
   color: var(--text-dark);
   min-height: 100vh;
   padding-bottom: 4rem;
-  position: relative;
 }
 
 /* ---------------------------------------------------------
-   1. HERO BANNER BACKGROUND (แก้ pointer-events ไม่ให้บังการคลิก)
-   --------------------------------------------------------- */
-body::before {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 260px;
-  background: linear-gradient(135deg, #0284c7 0%, #3b82f6 50%, #06b6d4 100%);
-  position: absolute;
-  top: 60px;
-  left: 0;
-  z-index: 0;
-  pointer-events: none !important; /* สำคัญมาก: ป้องกันไม่ให้แผ่นสีบังการคลิก */
-}
-
-/* ---------------------------------------------------------
-   2. TOP NAVBAR (กดปุ่มเมนูและล็อกเอ้าท์ได้ชัวร์)
+   1. TOP NAVBAR
    --------------------------------------------------------- */
 header, nav, .navbar, body > div:first-child {
   background: #ffffff !important;
@@ -62,9 +45,9 @@ header, nav, .navbar, body > div:first-child {
   align-items: center !important;
   gap: 1.5rem !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
-  position: relative !important;
-  z-index: 1000 !important;
   width: 100% !important;
+  position: relative !important;
+  z-index: 100 !important;
 }
 
 header div, nav div, .navbar div {
@@ -81,13 +64,11 @@ header *, nav *, .navbar * {
 }
 
 /* ---------------------------------------------------------
-   3. MAIN CONTAINERS & CARDS (ดัน Layer z-index ให้คลิกได้)
+   2. MAIN CONTAINERS & CARDS
    --------------------------------------------------------- */
 .container, main, body > div:not(:first-child) {
   max-width: 1240px;
   margin: 0 auto;
-  position: relative !important;
-  z-index: 10 !important; /* ดันเนื้อหาขึ้นมาอยู่เหนือ Banner สีฟ้า */
 }
 
 div[style*="background"], .card, section {
@@ -96,10 +77,8 @@ div[style*="background"], .card, section {
   padding: 2.25rem !important;
   border: 1px solid rgba(224, 230, 237, 0.8) !important;
   box-shadow: var(--shadow-lg) !important;
-  margin-top: 2rem !important;
-  margin-bottom: 2rem !important;
-  position: relative !important;
-  z-index: 10 !important;
+  margin-top: 1.75rem !important;
+  margin-bottom: 1.75rem !important;
 }
 
 h1, h2, h3, h4, .title {
@@ -110,7 +89,7 @@ h1, h2, h3, h4, .title {
 }
 
 /* ---------------------------------------------------------
-   4. FORM INPUTS & DROPDOWNS (กรอกข้อมูลได้ปกติ)
+   3. FORM INPUTS & DROPDOWNS (กรอกข้อมูลได้แน่นอน)
    --------------------------------------------------------- */
 input[type="text"], 
 input[type="number"], 
@@ -127,9 +106,11 @@ textarea {
   background-color: #ffffff !important;
   transition: all 0.2s ease !important;
   margin-bottom: 0.85rem !important;
-  position: relative !important;
-  z-index: 15 !important;
-  pointer-events: auto !important;
+  cursor: text !important;
+}
+
+select {
+  cursor: pointer !important;
 }
 
 input:focus, select:focus, textarea:focus {
@@ -147,7 +128,7 @@ label {
 }
 
 /* ---------------------------------------------------------
-   5. BUTTONS (กดปุ่มเพิ่ม/แก้ไข/ลบ/รีเฟรชได้ 100%)
+   4. BUTTONS (กดปุ่มได้ชัวร์ 100%)
    --------------------------------------------------------- */
 button, input[type="button"], input[type="submit"] {
   display: inline-flex !important;
@@ -166,9 +147,6 @@ button, input[type="button"], input[type="submit"] {
   color: #ffffff !important;
   box-shadow: 0 6px 18px rgba(83, 146, 249, 0.35) !important;
   white-space: nowrap !important;
-  position: relative !important;
-  z-index: 20 !important;
-  pointer-events: auto !important;
 }
 
 button:hover, input[type="button"]:hover, input[type="submit"]:hover {
@@ -202,7 +180,7 @@ td button {
 }
 
 /* ---------------------------------------------------------
-   6. TABLES
+   5. TABLES
    --------------------------------------------------------- */
 table {
   width: 100% !important;
