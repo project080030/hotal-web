@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hotel & Tour System</title>
+  <title>Hotel & Tour Management System</title>
   
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +18,7 @@
   <header class="navbar">
     <div class="nav-brand">
       <i class="fa-solid fa-hotel brand-icon"></i>
-      <span class="brand-title">Hotel & Tour System</span>
+      <span class="brand-title">Hotel & Tour <strong>System</strong></span>
     </div>
     
     <div class="nav-links">
@@ -33,7 +33,7 @@
     </div>
   </header>
 
-  <!-- HERO TITLE BANNER -->
+  <!-- HERO BANNER -->
   <section class="hero-banner">
     <div class="hero-container">
       <h1>Hotel & Tour Management System</h1>
@@ -45,7 +45,7 @@
   <main class="main-container">
 
     <!-- CARD 1: FORM CRUD -->
-    <div class="agoda-card">
+    <div class="card agoda-card">
       <div class="card-header">
         <div class="title-group">
           <div class="icon-box"><i class="fa-solid fa-sliders"></i></div>
@@ -95,14 +95,14 @@
         </div>
 
         <div class="form-actions">
-          <button type="submit" class="btn-agoda-primary"><i class="fa-solid fa-plus"></i> เพิ่มข้อมูลใหม่</button>
-          <button type="reset" class="btn-agoda-secondary"><i class="fa-solid fa-xmark"></i> ยกเลิกการแก้ไข</button>
+          <button type="submit" id="btn-submit" class="btn-agoda-primary"><i class="fa-solid fa-plus"></i> เพิ่มข้อมูลใหม่</button>
+          <button type="reset" id="btn-cancel" class="btn-agoda-secondary"><i class="fa-solid fa-xmark"></i> ยกเลิกการแก้ไข</button>
         </div>
       </form>
     </div>
 
     <!-- CARD 2: TABLE DATA -->
-    <div class="agoda-card">
+    <div class="card agoda-card">
       <div class="card-header">
         <div class="title-group">
           <div class="icon-box alt"><i class="fa-solid fa-list-check"></i></div>
@@ -111,14 +111,14 @@
             <span class="badge-sub">(แสดง 20 แถวล่าสุด)</span>
           </div>
         </div>
-        <button class="btn-refresh"><i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล</button>
+        <button id="btn-refresh" class="btn-refresh"><i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล</button>
       </div>
 
       <div class="table-responsive">
-        <table class="agoda-table">
+        <table class="agoda-table" id="data-table">
           <thead>
             <tr>
-              <th class="text-center" style="width: 140px;">จัดการ</th>
+              <th style="width: 140px; text-align: center;">จัดการ</th>
               <th>ROOM_ID</th>
               <th>ROOM_NUMBER</th>
               <th>ROOM_TYPE_ID</th>
@@ -126,7 +126,7 @@
             </tr>
           </thead>
           <tbody id="table-body">
-            <!-- Render via app.js -->
+            <!-- ข้อมูลจะถูกโหลดใส่ตรงนี้ผ่าน app.js -->
           </tbody>
         </table>
       </div>
