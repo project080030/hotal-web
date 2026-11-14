@@ -3,44 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hotel & Tour System</title>
+  <title>Hotel & Tour System - Luxury Agoda Portal</title>
+  <!-- Google Fonts: Kanit & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- HEADER NAVBAR -->
-  <header style="background: #0f172a; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #3b82f6;">
-    <div style="font-size: 1.25rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
-      🏨 Hotel & Tour System
+  <!-- 1. TOP NAVBAR -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <i class="fa-solid fa-hotel brand-icon"></i>
+      <span class="brand-text">Hotel & Tour System</span>
     </div>
-    <div style="display: flex; gap: 0.75rem; align-items: center;">
-      <button id="btn-tab-crud" style="padding: 0.5rem 1rem; background: #2563eb; color: white; border: none; border-radius: 20px; cursor: pointer; font-family: inherit;">จัดการข้อมูล (ทุกตาราง)</button>
-      <button id="btn-tab-report" style="padding: 0.5rem 1rem; background: #3b82f6; color: white; border: none; border-radius: 20px; cursor: pointer; font-family: inherit;">รายงานสรุป (6 Views)</button>
-      <button id="btn-tab-ai" style="padding: 0.5rem 1rem; background: #8b5cf6; color: white; border: none; border-radius: 20px; cursor: pointer; font-family: inherit;">🤖 AI ผู้ช่วยข้อมูล</button>
-      <span id="user-email" style="font-size: 0.9rem; color: #e2e8f0; margin-left: 0.5rem;">admin@hotal.com</span>
-      <button id="btn-logout" style="padding: 0.5rem 1rem; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: inherit;">ออกจากระบบ</button>
+    
+    <nav class="nav-menu">
+      <button class="nav-tab active"><i class="fa-solid fa-database"></i> จัดการข้อมูล (ทุกตาราง)</button>
+      <button class="nav-tab"><i class="fa-solid fa-chart-pie"></i> รายงานสรุป (6 Views)</button>
+      <button class="nav-tab ai-btn"><i class="fa-solid fa-robot"></i> AI ผู้ช่วยข้อมูล</button>
+    </nav>
+
+    <div class="user-profile">
+      <div class="user-info">
+        <i class="fa-solid fa-circle-user avatar"></i>
+        <span class="user-email">admin@hotal.com</span>
+      </div>
+      <button class="btn-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> ออกจากระบบ</button>
     </div>
   </header>
 
-  <!-- HERO TITLE BANNER -->
-  <section style="background: linear-gradient(135deg, #0284c7 0%, #3b82f6 50%, #06b6d4 100%); color: white; text-align: center; padding: 3rem 1rem 4rem 1rem;">
-    <h1 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem;">Hotel & Tour Management System</h1>
-    <p style="font-size: 1.05rem; opacity: 0.95; font-weight: 300;">ระบบบริหารจัดการห้องพัก และการท่องเที่ยวแบบครบวงจร</p>
+  <!-- 2. HERO BANNER SECTION -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <h1 class="hero-title">ท่องโลกทั้งใบในราคาถูกลง</h1>
+      <p class="hero-subtitle">ระบบบริหารจัดการห้องพัก และการท่องเที่ยวแบบครบวงจร</p>
+    </div>
   </section>
 
-  <!-- MAIN CONTENT CONTAINER -->
-  <main style="max-width: 1200px; margin: -40px auto 3rem auto; padding: 0 1.5rem; position: relative; z-index: 10;">
-    
-    <!-- CARD 1: FORM CRUD -->
-    <div style="background: #ffffff; border-radius: 16px; padding: 1.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; margin-bottom: 2rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid #e2e8f0;">
-        <h2 style="font-size: 1.25rem; color: #0f172a; font-weight: 600;">จัดการข้อมูล (CRUD ทุกตาราง)</h2>
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <label for="table-select" style="font-size: 0.85rem; color: #64748b; font-weight: 500;">ตาราง:</label>
-          <select id="table-select" style="padding: 0.5rem 0.85rem; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.9rem; outline: none;">
+  <!-- 3. MAIN CONTAINER -->
+  <main class="main-container">
+
+    <!-- FLOATING CARD 1: FORM MANAGEMENTS -->
+    <div class="agoda-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <i class="fa-solid fa-sliders header-icon"></i>
+          <div>
+            <h2>จัดการข้อมูล (CRUD ทุกตาราง)</h2>
+            <p class="subtitle">เลือกตารางที่ต้องการเพิ่ม แก้ไข หรือลบข้อมูลในระบบ</p>
+          </div>
+        </div>
+        
+        <div class="table-selector-box">
+          <label for="table-select"><i class="fa-solid fa-table-cells"></i> ตารางข้อมูล</label>
+          <select id="table-select" class="custom-select">
             <option value="rooms">rooms (ห้องพัก)</option>
             <option value="room_types">room_types (ประเภทห้อง)</option>
             <option value="bookings">bookings (การจอง)</option>
@@ -49,50 +69,102 @@
         </div>
       </div>
 
-      <!-- FORM FIELDS (คงชื่อ ID ดั้งเดิมไว้อย่างครบถ้วน) -->
-      <form id="crud-form" onsubmit="return false;">
-        <div id="form-fields" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-          <div>
-            <label style="font-size: 0.85rem; color: #64748b; font-weight: 500; display: block; margin-bottom: 0.35rem;">room_number</label>
-            <input type="text" id="room_number" placeholder="กรอกค่า room_number" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; outline: none;">
+      <!-- FORM FIELDS GRID -->
+      <form class="crud-form" id="crud-form" onsubmit="return false;">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="room_number">ROOM_NUMBER</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-door-closed input-icon"></i>
+              <input type="text" id="room_number" placeholder="กรอกค่า room_number" autocomplete="off">
+            </div>
           </div>
-          <div>
-            <label style="font-size: 0.85rem; color: #64748b; font-weight: 500; display: block; margin-bottom: 0.35rem;">room_type_id</label>
-            <input type="text" id="room_type_id" placeholder="กรอกค่า room_type_id" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; outline: none;">
+
+          <div class="form-field">
+            <label for="room_type_id">ROOM_TYPE_ID</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-key input-icon"></i>
+              <input type="text" id="room_type_id" placeholder="กรอกค่า room_type_id" autocomplete="off">
+            </div>
           </div>
-          <div>
-            <label style="font-size: 0.85rem; color: #64748b; font-weight: 500; display: block; margin-bottom: 0.35rem;">status</label>
-            <input type="text" id="status" placeholder="กรอกค่า status" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; outline: none;">
+
+          <div class="form-field">
+            <label for="status">STATUS</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-circle-check input-icon"></i>
+              <input type="text" id="status" placeholder="กรอกค่า status" autocomplete="off">
+            </div>
           </div>
         </div>
 
-        <div style="display: flex; gap: 0.75rem;">
-          <button type="submit" id="btn-submit" style="padding: 0.65rem 1.5rem; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-family: inherit;">+ เพิ่มข้อมูลใหม่</button>
-          <button type="button" id="btn-cancel" style="padding: 0.65rem 1.5rem; background: #94a3b8; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-family: inherit;">✕ ยกเลิกการแก้ไข</button>
+        <div class="form-actions">
+          <button type="submit" class="btn-agoda-primary"><i class="fa-solid fa-plus"></i> เพิ่มข้อมูลใหม่</button>
+          <button type="reset" class="btn-agoda-secondary"><i class="fa-solid fa-xmark"></i> ยกเลิกการแก้ไข</button>
         </div>
       </form>
     </div>
 
-    <!-- CARD 2: ENTERPRISE DATA TABLE -->
-    <div style="background: #ffffff; border-radius: 16px; padding: 1.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-        <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 600;">ข้อมูลในตาราง: <span id="current-table-title" style="color: #2563eb;">rooms</span> <span style="font-size: 0.85rem; color: #64748b; font-weight: normal;">(แสดง 20 แถวล่าสุด)</span></h3>
-        <button id="btn-refresh" style="padding: 0.55rem 1.25rem; background: #0284c7; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; font-family: inherit;">🔄 รีเฟรชข้อมูล</button>
+    <!-- FLOATING CARD 2: DATA TABLE -->
+    <div class="agoda-card">
+      <div class="card-header table-header-flex">
+        <div class="card-title-group">
+          <i class="fa-solid fa-list-check header-icon"></i>
+          <div>
+            <h2>ข้อมูลในตาราง: rooms</h2>
+            <span class="badge-count">(แสดง 20 แถวล่าสุด)</span>
+          </div>
+        </div>
+        <button class="btn-refresh"><i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล</button>
       </div>
 
-      <div style="width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid #e2e8f0;">
-        <table id="data-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+      <div class="table-responsive">
+        <table class="agoda-table">
           <thead>
-            <tr style="background: #f8fafc; color: #64748b; font-weight: 600; border-bottom: 2px solid #e2e8f0;">
-              <th style="padding: 0.85rem 1rem;">จัดการ</th>
-              <th style="padding: 0.85rem 1rem;">ROOM_ID</th>
-              <th style="padding: 0.85rem 1rem;">ROOM_NUMBER</th>
-              <th style="padding: 0.85rem 1rem;">ROOM_TYPE_ID</th>
-              <th style="padding: 0.85rem 1rem;">STATUS</th>
+            <tr>
+              <th class="text-center" style="width: 140px;">จัดการ</th>
+              <th>ROOM_ID</th>
+              <th>ROOM_NUMBER</th>
+              <th>ROOM_TYPE_ID</th>
+              <th>STATUS</th>
             </tr>
           </thead>
-          <tbody id="table-body">
-            <!-- ข้อมูลจะถูกดึงมาจาก app.js สคริปต์เดิมตามปกติ -->
+          <tbody>
+            <tr>
+              <td class="text-center">
+                <div class="action-btn-group">
+                  <button class="btn-tbl-edit"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+                  <button class="btn-tbl-delete"><i class="fa-solid fa-trash"></i> ลบ</button>
+                </div>
+              </td>
+              <td><span class="id-badge">70</span></td>
+              <td><strong class="room-num">710</strong></td>
+              <td><span class="type-badge">4</span></td>
+              <td><span class="status-badge status-maint">maintenance</span></td>
+            </tr>
+            <tr>
+              <td class="text-center">
+                <div class="action-btn-group">
+                  <button class="btn-tbl-edit"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+                  <button class="btn-tbl-delete"><i class="fa-solid fa-trash"></i> ลบ</button>
+                </div>
+              </td>
+              <td><span class="id-badge">69</span></td>
+              <td><strong class="room-num">709</strong></td>
+              <td><span class="type-badge">3</span></td>
+              <td><span class="status-badge status-occupied">occupied</span></td>
+            </tr>
+            <tr>
+              <td class="text-center">
+                <div class="action-btn-group">
+                  <button class="btn-tbl-edit"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+                  <button class="btn-tbl-delete"><i class="fa-solid fa-trash"></i> ลบ</button>
+                </div>
+              </td>
+              <td><span class="id-badge">68</span></td>
+              <td><strong class="room-num">708</strong></td>
+              <td><span class="type-badge">1</span></td>
+              <td><span class="status-badge status-avail">available</span></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -100,6 +172,5 @@
 
   </main>
 
-  <script src="app.js"></script>
 </body>
 </html>
