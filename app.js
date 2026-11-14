@@ -1,655 +1,131 @@
-// =====================================================
-// 1. SUPABASE CONFIGURATION
-// =====================================================
+/* ====== ตั้งค่า (แก้ 2 ค่านี้ก่อน) ====== */
+const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR-ANON-KEY';
 
-const PROJECT_ID = 'cbwywzbrijqlijwykxrb';
-const SUPABASE_URL = 'https://' + PROJECT_ID + '.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_jusl81rRe_vz1oYKATQkog__TSs2N9f';
-
-let currentUser = null;
-let accessToken = SUPABASE_ANON_KEY;
-let editingPkValue = null;
-
-
-// =====================================================
-// 2. DATABASE TABLE SCHEMAS
-// =====================================================
-
-const TABLE_SCHEMAS = {
-    rooms: { pk: 'room_id', cols: ['room_number', 'room_type_id', 'status'] },
-    room_types: { pk: 'room_type_id', cols: ['type_name', 'description', 'price_per_night', 'max_capacity'] },
-    customers: { pk: 'customer_id', cols: ['name', 'phone', 'email', 'password'] },
-    staff: { pk: 'staff_id', cols: ['name', 'role', 'email', 'phone'] },
-    promotions: { pk: 'promotion_id', cols: ['promotion_name', 'discount', 'start_date', 'end_date'] },
-    room_bookings: {
-        pk: 'booking_id',
-        cols: ['customer_id', 'room_id', 'promotion_id', 'staff_id', 'check_in', 'check_out', 'total_amount', 'status']
-    },
-    payments: { pk: 'payment_id', cols: ['booking_id', 'staff_id', 'amount', 'payment_method', 'status'] },
-    categories: { pk: 'category_id', cols: ['category_name', 'description'] },
-    menu_items: { pk: 'menu_id', cols: ['category_id', 'item_name', 'price', 'is_available'] },
-    room_service_orders: { pk: 'order_id', cols: ['room_id', 'booking_id', 'staff_id', 'total_amount', 'status'] },
-    order_details: { pk: 'detail_id', cols: ['order_id', 'menu_id', 'quantity', 'subtotal'] },
-    tour_guides: { pk: 'guide_id', cols: ['name', 'phone', 'languages', 'license_no', 'status'] },
-    tour_packages: { pk: 'package_id', cols: ['package_name', 'destination', 'duration_hours', 'price', 'max_capacity'] },
-    tour_bookings: {
-        pk: 'booking_id',
-        cols: ['customer_id', 'package_id', 'guide_id', 'staff_id', 'tour_date', 'num_people', 'total_amount', 'status']
-    },
-    reviews: { pk: 'review_id', cols: ['customer_id', 'room_booking_id', 'tour_booking_id', 'rating', 'comment'] }
+/* ตารางที่จัดการได้: แก้ชื่อตาราง/คอลัมน์ให้ตรงกับฐานข้อมูลจริง */
+const TABLES = {
+  rooms:      { label: 'rooms (ห้องพัก)', pk: 'room_id',     fields: ['room_number', 'room_type_id', 'status'] },
+  room_types: { label: 'room_types (ประเภทห้อง)', pk: 'room_type_id', fields: ['type_name', 'price'] },
+  customers:  { label: 'customers (ลูกค้า)', pk: 'customer_id', fields: ['name', 'phone', 'email'] },
+  bookings:   { label: 'bookings (การจอง)', pk: 'booking_id', fields: ['customer_id', 'room_id', 'check_in', 'check_out'] },
+  tours:      { label: 'tours (ทัวร์)', pk: 'tour_id', fields: ['tour_name', 'price'] }
 };
+/* ชื่อ View ที่ใช้ในรายงานสรุป (ใส่ให้ครบ 6 อัน) */
+const VIEWS = ['view_1', 'view_2', 'view_3', 'view_4', 'view_5', 'view_6'];
 
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let current = Object.keys(TABLES)[0], rows = [], editId = null, userEmail = '';
 
-// =====================================================
-// 3. API HEADER MANAGEMENT
-// =====================================================
-
-function getHeaders(extraHeaders) {
-    const headers = {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer ' + accessToken
-    };
-
-    if (extraHeaders) {
-        Object.keys(extraHeaders).forEach(function (key) {
-            headers[key] = extraHeaders[key];
-        });
-    }
-
-    return headers;
+function toast(msg, bad) {
+  const t = $('toast'); t.textContent = msg; t.className = 'toast show' + (bad ? ' bad' : '');
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.className = 'toast', 2800);
 }
 
-
-// =====================================================
-// 4. AUTHENTICATION INITIALIZATION
-// =====================================================
-
-window.onload = function () {
-    const savedUser = localStorage.getItem('hotel_user');
-    const savedToken = localStorage.getItem('hotel_token');
-
-    if (savedUser && savedToken) {
-        try {
-            accessToken = savedToken;
-            setupLoggedInUI(JSON.parse(savedUser));
-        } catch (err) {
-            localStorage.removeItem('hotel_token');
-            localStorage.removeItem('hotel_user');
-        }
-    }
-};
-
-
-// =====================================================
-// 5. LOGIN UI SETUP
-// =====================================================
-
-function setupLoggedInUI(user) {
-    currentUser = user;
-
-    document.getElementById('auth-section').style.display = 'none';
-    document.getElementById('nav-links').style.display = 'flex';
-    document.getElementById('user-display').innerText = user.email;
-
-    showTab('crud-tab', document.querySelector('.nav-btn'));
-    onSelectCrudTable();
-    loadSelectedView();
+/* ====== AUTH ====== */
+async function init() {
+  const { data } = await sb.auth.getSession();
+  data.session ? enter(data.session.user) : ($('login').hidden = false);
 }
-
-
-// =====================================================
-// 6. REGISTER
-// =====================================================
-
-async function register() {
-    const name = document.getElementById('auth-name').value.trim();
-    const email = document.getElementById('auth-email').value.trim();
-    const password = document.getElementById('auth-password').value.trim();
-    const msg = document.getElementById('auth-msg');
-
-    if (!email || !password) {
-        msg.style.color = '#dc2626';
-        msg.innerText = 'กรุณากรอกอีเมลและรหัสผ่าน';
-        return;
-    }
-
-    msg.style.color = '#2563eb';
-    msg.innerText = '⏳ กำลังสมัครสมาชิก...';
-
-    try {
-        const res = await fetch(SUPABASE_URL + '/auth/v1/signup', {
-            method: 'POST',
-            headers: getHeaders(),
-            body: JSON.stringify({
-                email: email,
-                password: password
-            })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            msg.style.color = '#dc2626';
-            msg.innerText = 'สมัครไม่สำเร็จ: ' +
-                (data.msg || data.error_description || data.message || 'ตรวจสอบอีเมล/รหัสผ่าน');
-            return;
-        }
-
-        if (name) {
-            const customerRes = await fetch(SUPABASE_URL + '/rest/v1/customers', {
-                method: 'POST',
-                headers: getHeaders({ 'Prefer': 'return=minimal' }),
-                body: JSON.stringify({
-                    name: name,
-                    email: email,
-                    password: 'auth_managed'
-                })
-            });
-
-            if (!customerRes.ok) {
-                throw new Error('สมัครสมาชิกสำเร็จ แต่บันทึกข้อมูลลูกค้าไม่สำเร็จ');
-            }
-        }
-
-        msg.style.color = 'green';
-        msg.innerText = '✅ สมัครสมาชิกสำเร็จ! กดปุ่ม "เข้าสู่ระบบ (Login)" ได้เลย';
-
-    } catch (err) {
-        msg.style.color = '#dc2626';
-        msg.innerText = 'เกิดข้อผิดพลาด: ' + err.message;
-    }
+function enter(user) {
+  userEmail = user.email; $('user-email').textContent = userEmail;
+  $('login').hidden = true; $('app').hidden = false;
+  $('table-select').innerHTML = Object.entries(TABLES).map(([k, v]) => `<option value="${k}">${esc(v.label)}</option>`).join('');
+  $('view-select').innerHTML = VIEWS.map(v => `<option>${esc(v)}</option>`).join('');
+  buildForm(); loadTable();
+  if (!$('chat-box').children.length) addMsg('bot', 'สวัสดีครับ ผมคือผู้ช่วย AI ของระบบ มีอะไรให้ช่วยไหมครับ');
 }
+$('login-form').addEventListener('submit', async e => {
+  e.preventDefault(); $('login-err').textContent = '';
+  const { data, error } = await sb.auth.signInWithPassword({ email: $('login-email').value, password: $('login-pass').value });
+  error ? $('login-err').textContent = 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' : enter(data.user);
+});
+$('btn-logout').addEventListener('click', async () => {
+  await sb.auth.signOut(); $('app').hidden = true; $('login').hidden = false;
+});
 
+/* ====== TABS ====== */
+document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === b));
+  ['crud', 'report', 'ai'].forEach(n => $('tab-' + n).hidden = n !== b.dataset.tab);
+  if (b.dataset.tab === 'report') loadView();
+}));
 
-// =====================================================
-// 7. LOGIN
-// =====================================================
-
-async function login() {
-    const email = document.getElementById('auth-email').value.trim();
-    const password = document.getElementById('auth-password').value.trim();
-    const msg = document.getElementById('auth-msg');
-
-    if (!email || !password) {
-        msg.style.color = '#dc2626';
-        msg.innerText = 'กรุณากรอกอีเมลและรหัสผ่าน';
-        return;
-    }
-
-    msg.style.color = '#2563eb';
-    msg.innerText = '⏳ กำลังเข้าสู่ระบบ...';
-
-    try {
-        const res = await fetch(
-            SUPABASE_URL + '/auth/v1/token?grant_type=password',
-            {
-                method: 'POST',
-                headers: getHeaders(),
-                body: JSON.stringify({
-                    email: email,
-                    password: password
-                })
-            }
-        );
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            msg.style.color = '#dc2626';
-            msg.innerText = 'เข้าสู่ระบบไม่สำเร็จ: ' +
-                (data.error_description || data.msg || 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
-            return;
-        }
-
-        accessToken = data.access_token;
-
-        localStorage.setItem('hotel_token', accessToken);
-        localStorage.setItem('hotel_user', JSON.stringify(data.user));
-
-        setupLoggedInUI(data.user);
-
-    } catch (err) {
-        msg.style.color = '#dc2626';
-        msg.innerText = 'เกิดข้อผิดพลาด: ' + err.message;
-    }
+/* ====== CRUD ====== */
+function buildForm() {
+  const t = TABLES[current];
+  $('form-fields').innerHTML = t.fields.map(f => `<label>${esc(f)}<input name="${esc(f)}" placeholder="กรอก ${esc(f)}"></label>`).join('');
+  $('table-title').innerHTML = `ข้อมูลในตาราง: <b>${esc(current)}</b> <span class="muted">(แสดง 20 แถวล่าสุด)</span>`;
+  resetForm();
 }
-
-
-// =====================================================
-// 8. LOGOUT
-// =====================================================
-
-function logout() {
-    localStorage.removeItem('hotel_token');
-    localStorage.removeItem('hotel_user');
-
-    currentUser = null;
-    accessToken = SUPABASE_ANON_KEY;
-
-    location.reload();
+function resetForm() {
+  editId = null; $('crud-form').reset();
+  $('btn-save').textContent = 'เพิ่มข้อมูลใหม่'; $('btn-cancel').hidden = true;
 }
-
-
-// =====================================================
-// 9. NAVIGATION / TAB MANAGEMENT
-// =====================================================
-
-function showTab(tabId, btnElement) {
-    document.querySelectorAll('.tab-content').forEach(function (el) {
-        el.style.display = 'none';
-    });
-
-    document.querySelectorAll('.nav-btn').forEach(function (el) {
-        el.classList.remove('active');
-    });
-
-    document.getElementById(tabId).style.display = 'block';
-
-    if (btnElement) {
-        btnElement.classList.add('active');
-    }
+function renderTable(el, data, cols, withActions) {
+  if (!data.length) { el.innerHTML = `<tr><td class="empty">ยังไม่มีข้อมูล</td></tr>`; return; }
+  el.innerHTML = `<thead><tr>${withActions ? '<th>จัดการ</th>' : ''}${cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>` +
+    data.map((r, i) => `<tr>${withActions ? `<td class="acts"><button class="btn ghost sm" data-edit="${i}">แก้ไข</button><button class="btn del sm" data-del="${i}">ลบ</button></td>` : ''}${cols.map(c => `<td>${esc(r[c])}</td>`).join('')}</tr>`).join('') + '</tbody>';
 }
-
-
-// =====================================================
-// 10. CRUD TABLE SELECTION
-// =====================================================
-
-function onSelectCrudTable() {
-    resetDynamicForm();
-
-    const tableName = document.getElementById('crud-table-selector').value;
-    const schema = TABLE_SCHEMAS[tableName];
-    const formContainer = document.getElementById('dynamic-form-fields');
-
-    if (!schema) return;
-
-    let formHtml = '';
-
-    schema.cols.forEach(function (col) {
-        formHtml += `
-            <div>
-                <label>${col}</label>
-                <input
-                    type="text"
-                    id="field-${col}"
-                    placeholder="กรอกค่า ${col}"
-                >
-            </div>
-        `;
-    });
-
-    formContainer.innerHTML = formHtml;
-
-    loadCrudTableData();
+async function loadTable() {
+  const t = TABLES[current];
+  const { data, error } = await sb.from(current).select('*').order(t.pk, { ascending: false }).limit(20);
+  if (error) { toast('โหลดข้อมูลไม่สำเร็จ: ' + error.message, true); rows = []; renderTable($('data-table'), [], []); return; }
+  rows = data; renderTable($('data-table'), rows, [t.pk, ...t.fields], true);
 }
+$('table-select').addEventListener('change', e => { current = e.target.value; buildForm(); loadTable(); });
+$('btn-refresh').addEventListener('click', loadTable);
+$('btn-cancel').addEventListener('click', resetForm);
+$('crud-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const t = TABLES[current], payload = {};
+  t.fields.forEach(f => { const v = e.target.elements[f].value.trim(); payload[f] = v === '' ? null : v; });
+  const q = editId === null ? sb.from(current).insert(payload) : sb.from(current).update(payload).eq(t.pk, editId);
+  const { error } = await q;
+  if (error) return toast('บันทึกไม่สำเร็จ: ' + error.message, true);
+  toast(editId === null ? 'เพิ่มข้อมูลแล้ว' : 'บันทึกการแก้ไขแล้ว'); resetForm(); loadTable();
+});
+$('data-table').addEventListener('click', async e => {
+  const t = TABLES[current], b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.edit !== undefined) {
+    const r = rows[b.dataset.edit]; editId = r[t.pk];
+    t.fields.forEach(f => $('crud-form').elements[f].value = r[f] ?? '');
+    $('btn-save').textContent = 'บันทึกการแก้ไข'; $('btn-cancel').hidden = false; scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (b.dataset.del !== undefined && confirm('ยืนยันการลบข้อมูลนี้?')) {
+    const { error } = await sb.from(current).delete().eq(t.pk, rows[b.dataset.del][t.pk]);
+    error ? toast('ลบไม่สำเร็จ: ' + error.message, true) : (toast('ลบข้อมูลแล้ว'), loadTable());
+  }
+});
 
-
-// =====================================================
-// 11. LOAD CRUD TABLE DATA
-// =====================================================
-
-async function loadCrudTableData() {
-    const tableName = document.getElementById('crud-table-selector').value;
-    const schema = TABLE_SCHEMAS[tableName];
-    const container = document.getElementById('crud-table-container');
-
-    if (!schema) return;
-
-    document.getElementById('crud-table-title').innerText =
-        'ข้อมูลในตาราง: ' + tableName + ' (แสดง 20 แถวล่าสุด)';
-
-    container.innerHTML = '<p>กำลังโหลด...</p>';
-
-    try {
-        const res = await fetch(
-            SUPABASE_URL + '/rest/v1/' + tableName +
-            '?select=*&order=' + schema.pk + '.desc&limit=20',
-            {
-                headers: getHeaders()
-            }
-        );
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            container.textContent = 'Error: ' + (data.message || JSON.stringify(data));
-            return;
-        }
-
-        if (!data || data.length === 0) {
-            container.innerHTML = '<p>ยังไม่มีข้อมูลในตารางนี้</p>';
-            return;
-        }
-
-        const headers = Object.keys(data[0]);
-
-        let html = `
-            <table>
-                <thead>
-                    <tr>
-                        <th>จัดการ</th>
-                        ${headers.map(h => `<th>${h}</th>`).join('')}
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        data.forEach(function (row) {
-            const pkVal = JSON.stringify(row[schema.pk]);
-            const rowJson = encodeURIComponent(JSON.stringify(row));
-
-            html += `
-                <tr>
-                    <td>
-                        <button class="btn-edit"
-                            onclick="editDynamicRecord('${rowJson}')">
-                            แก้ไข
-                        </button>
-
-                        <button class="btn-del"
-                            onclick='deleteDynamicRecord(${pkVal})'>
-                            ลบ
-                        </button>
-                    </td>
-
-                    ${headers.map(h => `<td>${row[h] ?? '-'}</td>`).join('')}
-                </tr>
-            `;
-        });
-
-        html += `
-                </tbody>
-            </table>
-        `;
-
-        container.innerHTML = html;
-
-    } catch (err) {
-        container.textContent = 'Error: ' + err.message;
-    }
+/* ====== REPORT ====== */
+async function loadView() {
+  const { data, error } = await sb.from($('view-select').value).select('*').limit(100);
+  if (error) { toast('โหลดรายงานไม่สำเร็จ: ' + error.message, true); return renderTable($('report-table'), [], []); }
+  renderTable($('report-table'), data, data[0] ? Object.keys(data[0]) : [], false);
 }
+$('view-select').addEventListener('change', loadView);
 
-
-// =====================================================
-// 12. EDIT DYNAMIC RECORD
-// =====================================================
-
-function editDynamicRecord(encodedRow) {
-    const row = JSON.parse(decodeURIComponent(encodedRow));
-
-    const tableName = document.getElementById('crud-table-selector').value;
-    const schema = TABLE_SCHEMAS[tableName];
-
-    editingPkValue = row[schema.pk];
-
-    schema.cols.forEach(function (col) {
-        const input = document.getElementById('field-' + col);
-
-        if (input) {
-            input.value = row[col] !== null ? row[col] : '';
-        }
-    });
-
-    document.getElementById('btn-save-record').innerText =
-        '💾 บันทึกการแก้ไข (ID: ' + editingPkValue + ')';
-
-    document.getElementById('btn-cancel-record').style.display = 'inline-block';
+/* ====== CHAT (บันทึก chat_logs ที่ฝั่ง /api/chat) ====== */
+let sid; try { sid = sessionStorage.sid || (sessionStorage.sid = crypto.randomUUID()); } catch { sid = Date.now() + '-' + Math.random(); }
+const history = [];
+function addMsg(who, text) {
+  const d = document.createElement('div'); d.className = 'msg ' + who; d.textContent = text;
+  $('chat-box').appendChild(d); $('chat-box').scrollTop = 1e9; return d;
 }
+$('chat-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const text = $('chat-input').value.trim(); if (!text) return;
+  $('chat-input').value = ''; $('chat-send').disabled = true;
+  addMsg('user', text); const wait = addMsg('bot typing', 'กำลังพิมพ์…');
+  try {
+    const r = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sid, user_email: userEmail, message: text, history: history.slice(-10) }) });
+    const j = await r.json(); if (!r.ok) throw new Error(j.error || r.status);
+    wait.className = 'msg bot'; wait.textContent = j.reply;
+    history.push({ role: 'user', content: text }, { role: 'assistant', content: j.reply });
+  } catch (err) { wait.className = 'msg bot'; wait.textContent = 'ขออภัย เกิดข้อผิดพลาด: ' + err.message; }
+  $('chat-send').disabled = false; $('chat-input').focus();
+});
 
-
-// =====================================================
-// 13. RESET DYNAMIC FORM
-// =====================================================
-
-function resetDynamicForm() {
-    editingPkValue = null;
-
-    document.querySelectorAll('#dynamic-form-fields input').forEach(function (inp) {
-        inp.value = '';
-    });
-
-    document.getElementById('btn-save-record').innerText = '➕ เพิ่มข้อมูลใหม่';
-    document.getElementById('btn-cancel-record').style.display = 'none';
-}
-
-
-// =====================================================
-// 14. SAVE / INSERT / UPDATE RECORD
-// =====================================================
-
-async function saveDynamicRecord() {
-    const tableName = document.getElementById('crud-table-selector').value;
-    const schema = TABLE_SCHEMAS[tableName];
-
-    if (!schema) return;
-
-    const payload = {};
-
-    schema.cols.forEach(function (col) {
-        const val = document.getElementById('field-' + col).value.trim();
-        payload[col] = val === '' ? null : val;
-    });
-
-    try {
-        let res;
-
-        if (editingPkValue !== null) {
-            res = await fetch(
-                SUPABASE_URL + '/rest/v1/' + tableName +
-                '?' + schema.pk + '=eq.' + encodeURIComponent(editingPkValue),
-                {
-                    method: 'PATCH',
-                    headers: getHeaders({ 'Prefer': 'return=minimal' }),
-                    body: JSON.stringify(payload)
-                }
-            );
-
-        } else {
-            res = await fetch(SUPABASE_URL + '/rest/v1/' + tableName, {
-                method: 'POST',
-                headers: getHeaders({ 'Prefer': 'return=minimal' }),
-                body: JSON.stringify(payload)
-            });
-        }
-
-        if (!res.ok) {
-            const errData = await res.json();
-            return alert('บันทึกไม่สำเร็จ: ' + (errData.message || JSON.stringify(errData)));
-        }
-
-        resetDynamicForm();
-        loadCrudTableData();
-
-    } catch (err) {
-        alert('Error: ' + err.message);
-    }
-}
-
-
-// =====================================================
-// 15. DELETE DYNAMIC RECORD
-// =====================================================
-
-async function deleteDynamicRecord(pkVal) {
-    const tableName = document.getElementById('crud-table-selector').value;
-    const schema = TABLE_SCHEMAS[tableName];
-
-    if (!schema) return;
-
-    if (!confirm(
-        'ยืนยันการลบข้อมูล ID: ' + pkVal +
-        ' จากตาราง ' + tableName + '?'
-    )) {
-        return;
-    }
-
-    try {
-        const res = await fetch(
-            SUPABASE_URL + '/rest/v1/' + tableName +
-            '?' + schema.pk + '=eq.' + encodeURIComponent(pkVal),
-            {
-                method: 'DELETE',
-                headers: getHeaders({ 'Prefer': 'return=minimal' })
-            }
-        );
-
-        if (!res.ok) {
-            const errData = await res.json();
-            return alert(
-                'ลบไม่สำเร็จ (อาจมีข้อมูลตารางอื่นอ้างอิงอยู่): ' +
-                (errData.message || JSON.stringify(errData))
-            );
-        }
-
-        loadCrudTableData();
-
-    } catch (err) {
-        alert('Error: ' + err.message);
-    }
-}
-
-
-// =====================================================
-// 16. LOAD DATABASE VIEW
-// =====================================================
-
-async function loadSelectedView() {
-    const viewName = document.getElementById('view-selector').value;
-    const container = document.getElementById('view-result-container');
-
-    container.innerHTML = '<p>กำลังโหลดข้อมูล...</p>';
-
-    try {
-        const res = await fetch(
-            SUPABASE_URL + '/rest/v1/' + viewName + '?select=*&limit=20',
-            {
-                headers: getHeaders()
-            }
-        );
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            container.textContent = 'Error: ' + (data.message || JSON.stringify(data));
-            return;
-        }
-
-        if (!data || data.length === 0) {
-            container.innerHTML = '<p>ไม่มีข้อมูลใน View นี้</p>';
-            return;
-        }
-
-        container.innerHTML = buildHtmlTable(data);
-
-    } catch (err) {
-        container.textContent = 'Error: ' + err.message;
-    }
-}
-
-
-// =====================================================
-// 17. BUILD HTML TABLE
-// =====================================================
-
-function buildHtmlTable(dataArray) {
-    if (!Array.isArray(dataArray) || dataArray.length === 0) {
-        return '';
-    }
-
-    const headers = Object.keys(dataArray[0]);
-
-    let html = `
-        <table>
-            <thead>
-                <tr>
-                    ${headers.map(h => `<th>${h}</th>`).join('')}
-                </tr>
-            </thead>
-            <tbody>
-    `;
-
-    dataArray.forEach(function (row) {
-        html += '<tr>';
-
-        headers.forEach(function (h) {
-            html += `<td>${row[h] ?? '-'}</td>`;
-        });
-
-        html += '</tr>';
-    });
-
-    html += `
-            </tbody>
-        </table>
-    `;
-
-    return html;
-}
-
-
-// =====================================================
-// 18. AI CHAT SYSTEM
-// =====================================================
-
-async function sendChat() {
-    const input = document.getElementById('chat-input');
-    const question = input.value.trim();
-    
-    if (!question) return;
-    
-    const historyBox = document.getElementById('chat-history');
-    const loadingBox = document.getElementById('chat-loading');
-    
-    historyBox.innerHTML += `
-        <div class="user-message">${question}</div>
-    `;
-    
-    input.value = '';
-    loadingBox.style.display = 'block';
-    historyBox.scrollTop = historyBox.scrollHeight;
-    
-    try {
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                question: question,
-                userEmail: currentUser ? currentUser.email : 'guest'
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(`เกิดข้อผิดพลาดจาก Server (HTTP Status: ${response.status})`);
-        }
-
-        const result = await response.json();
-        
-        loadingBox.style.display = 'none';
-
-        let aiHtml = `
-            <div class="ai-message">
-                ${result.answer || 'ไม่มีคำตอบจากระบบ'}
-            </div>
-        `;
-        
-        if (result.data && result.data.length > 0) {
-            aiHtml += buildHtmlTable(result.data);
-        }
-
-        historyBox.innerHTML += aiHtml;
-        historyBox.scrollTop = historyBox.scrollHeight;
-
-    } catch (err) {
-        loadingBox.style.display = 'none';
-        historyBox.innerHTML += `
-            <div class="ai-message" style="color: red; border: 1px solid red; padding: 10px; margin-top: 10px;">
-                ❌ ขัดข้อง: ${err.message}
-            </div>
-        `;
-        historyBox.scrollTop = historyBox.scrollHeight;
-    }
-}
+init();
