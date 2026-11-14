@@ -1,9 +1,10 @@
 // =========================================================
-// Hotel & Tour System - Dynamic Multi-Table App
+// Hotel & Tour System - Full Dynamic Multi-Table App
 // =========================================================
 const SUPABASE_URL = 'https://cbwywzbrijqlijwykxrb.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_jusl81rRe_vz1oYKATQkog__TSs2N9f';
 
+// สร้าง Instance Supabase Client
 const _supabase = (window.supabase && window.supabase.createClient) 
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) 
   : null;
@@ -15,17 +16,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const tableBody = document.getElementById("table-body") || document.querySelector(".agoda-table tbody");
     const tableHead = document.querySelector("#data-table thead tr");
     const submitBtn = document.getElementById("btn-submit") || document.querySelector(".btn-agoda-primary");
-    const formFieldsContainer = document.getElementById("form-fields") || document.querySelector(".form-grid");
+    const formFieldsContainer = document.getElementById("form-fields");
 
     let currentTable = "rooms";
     let editingId = null;
 
-    // 1. สร้าง Form Inputs อัตโนมัติตามคอลัมน์ของตาราง
+    // 1. ฟังก์ชันเจนช่องกรอกข้อมูล (Inputs) อัตโนมัติตามคอลัมน์ของตารางที่เลือก
     function generateFormFields(columns) {
         if (!formFieldsContainer) return;
         formFieldsContainer.innerHTML = "";
 
-        // ข้ามคอลัมน์แรก (Primary Key / ID Auto Increment)
+        // ข้ามคอลัมน์แรก (ID / Primary Key)
         const editableColumns = columns.slice(1);
 
         editableColumns.forEach(col => {
@@ -42,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 2. ฟังก์ชันโหลดข้อมูลตารางแบบ Dynamic
+    // 2. ฟังก์ชันโหลดข้อมูลตารางจาก Supabase แบบ Dynamic
     async function loadTableData(tableName) {
         if (!tableBody || !_supabase) return;
 
@@ -54,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (titleEl) titleEl.textContent = currentTable;
 
         try {
-            tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center; padding:1.5rem; color:#94a3b8;">กำลังดึงข้อมูลตาราง ${currentTable}...</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="15" style="text-align:center; padding:1.5rem; color:#94a3b8;">กำลังดึงข้อมูลตาราง ${currentTable}...</td></tr>`;
 
             const { data, error } = await _supabase
                 .from(currentTable)
@@ -66,23 +67,23 @@ document.addEventListener("DOMContentLoaded", () => {
             tableBody.innerHTML = "";
 
             if (!data || data.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center; padding:1.5rem; color:#94a3b8;">ไม่พบข้อมูลในตาราง ${currentTable}</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="15" style="text-align:center; padding:1.5rem; color:#94a3b8;">ไม่พบข้อมูลในตาราง ${currentTable}</td></tr>`;
                 return;
             }
 
-            // ดึงรายชื่อคอลัมน์
+            // รายชื่อคอลัมน์ทั้งหมดในตาราง
             const columns = Object.keys(data[0]);
 
-            // สร้าง Form Inputs ใหม่ให้ตรงกับตารางที่เลือก
+            // เจนช่องกรอกข้อมูลในฟอร์มให้ตรงกับตาราง
             generateFormFields(columns);
 
-            // อัปเดตหัวตาราง (THEAD)
+            // อัปเดตหัวตาราง (Thead)
             if (tableHead) {
-                tableHead.innerHTML = `<th style="width: 140px; text-align: center;">จัดการ</th>` + 
+                tableHead.innerHTML = `<th style="width: 130px; text-align: center;">จัดการ</th>` + 
                     columns.map(col => `<th>${col.toUpperCase()}</th>`).join('');
             }
 
-            // เรนเดอร์ข้อมูล (TBODY)
+            // เรนเดอร์แถวข้อมูล (Tbody)
             data.forEach(row => {
                 const tr = document.createElement("tr");
 
@@ -109,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         if (input) input.value = row[col] ?? "";
                     });
                     if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึกการแก้ไข';
-                    window.scrollTo({ top: 250, behavior: 'smooth' });
+                    window.scrollTo({ top: 220, behavior: 'smooth' });
                 };
 
                 // ปุ่มลบ
@@ -138,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 actionTd.appendChild(btnGroup);
                 tr.appendChild(actionTd);
 
-                // คอลัมน์ข้อมูล
+                // แสดงข้อมูลตามคอลัมน์
                 columns.forEach(col => {
                     const td = document.createElement("td");
                     td.textContent = row[col] ?? "-";
@@ -150,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (error) {
             console.error(error);
-            tableBody.innerHTML = `<tr><td colspan="12" style="text-align:center; padding:1.5rem; color:#ef4444;">Error: ${error.message}</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="15" style="text-align:center; padding:1.5rem; color:#ef4444;">Error: ${error.message}</td></tr>`;
         }
     }
 
@@ -212,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 4. ผูก Event เปลี่ยนตาราง & รีเฟรช & ออกจากระบบ
+    // 4. ผูก Event สลับตาราง, รีเฟรช และ ออกจากระบบ
     if (tableSelect) {
         tableSelect.addEventListener("change", (e) => {
             loadTableData(e.target.value);
@@ -234,6 +235,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // โหลดครั้งแรก
+    // โหลดตารางเริ่มต้น
     loadTableData("rooms");
 });
