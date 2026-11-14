@@ -1,23 +1,19 @@
 /* =========================================================
-   Hotel & Tour System - UI Enhancement (Original Structure)
+   Hotel & Tour System - Safe UI & Button Styling
    ========================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap');
 
 :root {
-  --primary-color: #2563eb;
+  --primary-blue: #2563eb;
   --primary-hover: #1d4ed8;
   --bg-color: #f1f5f9;
   --card-bg: #ffffff;
-  --text-main: #0f172a;
+  --text-dark: #0f172a;
   --text-muted: #64748b;
-  --border-color: #e2e8f0;
-  --danger-color: #ef4444;
-  --success-color: #10b981;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --border-color: #cbd5e1;
   --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-lg: 14px;
 }
 
 * {
@@ -29,42 +25,78 @@
 
 body {
   background-color: var(--bg-color);
-  color: var(--text-main);
+  color: var(--text-dark);
   min-height: 100vh;
-  padding-bottom: 2rem;
 }
 
 /* ---------------------------------------------------------
-   Navbar / Header Style
+   1. NAVBAR / HEADER
    --------------------------------------------------------- */
-header, .navbar, nav {
-  background-color: #0f172a;
-  color: #ffffff;
-  padding: 0.85rem 2rem;
-  box-shadow: var(--shadow-md);
+header, .navbar, nav, div[style*="background"] {
+  font-family: 'Kanit', sans-serif;
 }
 
 /* ---------------------------------------------------------
-   Cards & Layout
+   2. CARDS & CONTAINER (กล่องจัดการข้อมูล / ตาราง)
    --------------------------------------------------------- */
-.container, main {
-  max-width: 1240px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+.container, main, body > div {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* สไตล์กล่อง Card สีขาวลอยตัว */
-div[class*="card"], .bg-white, section {
-  background-color: var(--card-bg);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--border-color);
+/* กล่อง Card สีขาว */
+div[style*="background: white"], 
+div[style*="background-color: white"], 
+div[style*="background: rgb(255, 255, 255)"],
+.card {
+  background-color: var(--card-bg) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 1.75rem !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid #e2e8f0 !important;
+  margin-bottom: 1.5rem !important;
 }
 
 /* ---------------------------------------------------------
-   Form Elements (Inputs & Selects)
+   3. FIX BUTTONS (แก้ไขปุ่มกดทั้งหมดให้สวยงาม มีสีสัน ไม่ลีบเล็ก)
+   --------------------------------------------------------- */
+button, input[type="button"], input[type="submit"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.4rem !important;
+  padding: 0.55rem 1.1rem !important;
+  font-family: 'Kanit', sans-serif !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  border-radius: var(--radius-md) !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+  background-color: var(--primary-blue) !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  line-height: 1.4 !important;
+}
+
+button:hover, input[type="button"]:hover, input[type="submit"]:hover {
+  background-color: var(--primary-hover) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.25) !important;
+}
+
+button:active, input[type="button"]:active, input[type="submit"]:active {
+  transform: translateY(0) !important;
+}
+
+/* ปุ่มรีเฟรชข้อมูล (สีฟ้า) */
+button:contains("รีเฟรช"), button[onclick*="fetch"], button[onclick*="load"] {
+  background-color: #0284c7 !important;
+}
+
+/* ---------------------------------------------------------
+   4. FORM INPUTS & SELECTS (ช่องกรอกข้อมูล & Dropdown)
    --------------------------------------------------------- */
 input[type="text"], 
 input[type="number"], 
@@ -72,118 +104,67 @@ input[type="email"],
 input[type="password"], 
 select, 
 textarea {
-  width: 100%;
-  padding: 0.6rem 0.85rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  font-size: 0.92rem;
-  outline: none;
-  background-color: #ffffff;
-  color: var(--text-main);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100% !important;
+  padding: 0.6rem 0.85rem !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-md) !important;
+  font-size: 0.92rem !important;
+  outline: none !important;
+  background-color: #ffffff !important;
+  color: var(--text-dark) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  border-color: var(--primary-blue) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
 }
 
 label {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  margin-bottom: 0.35rem;
-  display: inline-block;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  color: var(--text-muted) !important;
+  margin-bottom: 0.35rem !important;
+  display: inline-block !important;
 }
 
 /* ---------------------------------------------------------
-   Buttons Style
-   --------------------------------------------------------- */
-button, .btn {
-  font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 500;
-  padding: 0.55rem 1.1rem;
-  border-radius: var(--radius-md);
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-}
-
-button:hover, .btn:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-}
-
-button:active, .btn:active {
-  transform: translateY(0);
-}
-
-/* Primary Button */
-button[type="submit"], .btn-primary, button:not([class]) {
-  background-color: var(--primary-color);
-  color: #ffffff;
-}
-
-/* Danger / Logout Button */
-.btn-danger, button[class*="danger"], button[class*="logout"] {
-  background-color: var(--danger-color);
-  color: #ffffff;
-}
-
-/* Refresh / Secondary Button */
-.btn-info, button[class*="refresh"], button[class*="info"] {
-  background-color: #0284c7;
-  color: #ffffff;
-}
-
-/* ---------------------------------------------------------
-   Tables (ส่วนแสดงผลข้อมูล 20 แถวล่าสุด)
+   5. TABLES (ตารางแสดงข้อมูล)
    --------------------------------------------------------- */
 table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-  font-size: 0.9rem;
-  background-color: #ffffff;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  border: 1px solid var(--border-color);
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin-top: 1rem !important;
+  font-size: 0.9rem !important;
+  background-color: #ffffff !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden !important;
+  border: 1px solid #e2e8f0 !important;
 }
 
 th {
-  background-color: #f8fafc;
-  color: var(--text-muted);
-  font-weight: 600;
-  text-align: left;
-  padding: 0.75rem 1rem;
-  border-bottom: 2px solid var(--border-color);
+  background-color: #f8fafc !important;
+  color: var(--text-muted) !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+  padding: 0.75rem 1rem !important;
+  border-bottom: 2px solid #e2e8f0 !important;
 }
 
 td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border-color);
-  color: var(--text-main);
-}
-
-tr:last-child td {
-  border-bottom: none;
+  padding: 0.75rem 1rem !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  color: var(--text-dark) !important;
 }
 
 tr:hover td {
-  background-color: #f8fafc;
+  background-color: #f8fafc !important;
 }
 
 /* ---------------------------------------------------------
-   Error & Alert Messages
+   6. ERROR TEXT
    --------------------------------------------------------- */
-.error, [class*="error"], [id*="error"] {
-  color: var(--danger-color);
-  font-size: 0.9rem;
-  font-weight: 500;
-  padding: 0.5rem 0;
+div:contains("Error"), p:contains("Error"), span:contains("Error") {
+  color: #ef4444 !important;
+  font-weight: 500 !important;
 }
