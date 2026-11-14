@@ -1,103 +1,69 @@
 /* =========================================================
-   Hotel & Tour System - Ultimate Enterprise Glass UI (Fixed Header)
+   Hotel & Tour System - Ultimate Clickable Fix
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg-dark: #090d16;
-  --panel-bg: rgba(18, 26, 43, 0.85);
-  --panel-border: rgba(255, 255, 255, 0.12);
-  --primary-glow: #6366f1;
-  --primary-hover: #4f46e5;
+  --primary-blue: #5392f9;
+  --bg-dark: #0b0f17;
+  --panel-bg: #121a2b;
+  --border-color: rgba(255, 255, 255, 0.1);
   --text-main: #f8fafc;
-  --text-muted: #cbd5e1;
-  --input-bg: rgba(15, 23, 42, 0.85);
-  --radius-xl: 16px;
-  --radius-md: 10px;
-  --radius-sm: 6px;
+  --text-muted: #94a3b8;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Prompt', 'Inter', -apple-system, sans-serif;
+  font-family: 'Kanit', sans-serif;
 }
 
 body {
   background-color: var(--bg-dark);
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
-  background-attachment: fixed;
   color: var(--text-main);
   min-height: 100vh;
-  padding-bottom: 4rem;
+  position: relative;
 }
 
-/* ---------------------------------------------------------
-   1. TOPBAR & NAVBAR (แก้ปัญหา admin@hotal.com โดนปุ่มบัง)
-   --------------------------------------------------------- */
-header, nav, .navbar, body > div:first-child {
-  background: rgba(9, 13, 22, 0.95) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border-bottom: 1px solid var(--panel-border) !important;
-  padding: 0.75rem 2rem !important;
+/* 1. ปลดล็อกแผ่น Overlay ลอยบังการคลิก (สำคัญมาก!) */
+body::before, body::after, div::before, div::after {
+  pointer-events: none !important;
+}
+
+/* 2. TOP NAVBAR (ดัน z-index ให้กดปุ่มด้านบนได้ 100%) */
+header, nav, .navbar {
+  background: #0f172a !important;
+  padding: 0.85rem 2rem !important;
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  gap: 1rem !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
   position: relative !important;
-  z-index: 100 !important;
+  z-index: 1000 !important;
+  border-bottom: 1px solid var(--border-color) !important;
 }
 
-/* จัดระเบียบกลุ่มเมนูด้านขวา */
-header div, nav div, .navbar div {
-  display: flex !important;
-  align-items: center !important;
-  gap: 0.75rem !important;
-  flex-wrap: wrap !important;
-}
-
-header *, nav *, .navbar * {
-  color: #ffffff !important;
-}
-
-/* ---------------------------------------------------------
-   2. CONTAINERS & PANELS
-   --------------------------------------------------------- */
+/* 3. CARDS & PANELS (ดัน z-index ให้กรอกข้อมูลได้) */
 .container, main, body > div:not(:first-child) {
-  max-width: 1320px;
+  max-width: 1240px;
   margin: 0 auto;
+  position: relative !important;
+  z-index: 10 !important;
 }
 
-div[style*="background: white"], 
-div[style*="background-color: white"], 
-div[style*="background: rgb(255, 255, 255)"],
-.card, section {
+div[style*="background"], .card, section {
   background: var(--panel-bg) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  border-radius: var(--radius-xl) !important;
+  border-radius: 16px !important;
   padding: 2rem !important;
-  border: 1px solid var(--panel-border) !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.1) !important;
-  margin-bottom: 2rem !important;
+  border: 1px solid var(--border-color) !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+  position: relative !important;
+  z-index: 10 !important;
 }
 
-h1, h2, h3, h4, .title {
-  color: #ffffff !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.4px !important;
-  margin-bottom: 1.25rem !important;
-}
-
-/* ---------------------------------------------------------
-   3. FORM INPUTS & SELECTS
-   --------------------------------------------------------- */
+/* 4. INPUTS (ให้พิมพ์ข้อมูลได้แน่นอน) */
 input[type="text"], 
 input[type="number"], 
 input[type="email"], 
@@ -106,135 +72,54 @@ select,
 textarea {
   width: 100% !important;
   padding: 0.75rem 1rem !important;
-  border: 1px solid var(--panel-border) !important;
-  border-radius: var(--radius-md) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px !important;
   font-size: 0.95rem !important;
   color: #ffffff !important;
-  background-color: var(--input-bg) !important;
-  transition: all 0.2s ease !important;
-  margin-bottom: 0.85rem !important;
+  background-color: rgba(15, 23, 42, 0.8) !important;
+  position: relative !important;
+  z-index: 20 !important;
+  pointer-events: auto !important;
+  cursor: text !important;
 }
 
-::placeholder {
-  color: #94a3b8 !important;
-  opacity: 1 !important;
+select {
+  cursor: pointer !important;
 }
 
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-text-fill-color: #ffffff !important;
-  -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
-  transition: background-color 5000s ease-in-out 0s;
-}
-
-input:focus, select:focus, textarea:focus {
-  border-color: var(--primary-glow) !important;
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25) !important;
-  outline: none !important;
-}
-
-label {
-  font-size: 0.8rem !important;
-  font-weight: 600 !important;
-  color: var(--text-muted) !important;
-  margin-bottom: 0.4rem !important;
-  display: inline-block !important;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-}
-
-select option {
-  background-color: #0f172a !important;
-  color: #ffffff !important;
-}
-
-/* ---------------------------------------------------------
-   4. BUTTONS & ACTIONS
-   --------------------------------------------------------- */
+/* 5. BUTTONS (กดปุ่มเพิ่ม/แก้ไข/ลบ/รีเฟรชได้ 100%) */
 button, input[type="button"], input[type="submit"] {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 0.4rem !important;
-  padding: 0.6rem 1.25rem !important;
-  font-family: 'Prompt', sans-serif !important;
-  font-size: 0.88rem !important;
-  font-weight: 600 !important;
-  border-radius: var(--radius-md) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  gap: 0.5rem !important;
+  padding: 0.65rem 1.4rem !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  border-radius: 30px !important;
+  border: none !important;
   cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
+  background: linear-gradient(135deg, #5392f9, #2b6cb0) !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35) !important;
-  white-space: nowrap !important;
+  position: relative !important;
+  z-index: 30 !important;
+  pointer-events: auto !important;
 }
 
-button:hover, input[type="button"]:hover, input[type="submit"]:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.55) !important;
+button:hover {
   filter: brightness(1.1) !important;
 }
 
-button:active {
-  transform: translateY(0) !important;
-}
-
-/* ปุ่มกดภายในตาราง (แก้ไข / ลบ) ให้เล็กลงกำลังดี */
-td button {
-  padding: 0.35rem 0.75rem !important;
-  font-size: 0.8rem !important;
-  border-radius: var(--radius-sm) !important;
-}
-
-/* ปุ่มยกเลิก */
-button[class*="cancel"], button:contains("ยกเลิก") {
-  background: linear-gradient(135deg, #475569, #334155) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-}
-
-/* ปุ่มลบ / ออกจากระบบ */
-button[class*="delete"], button[class*="danger"], button[class*="logout"], button:contains("ลบ"), button:contains("ออกจากระบบ") {
-  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35) !important;
-}
-
-/* ---------------------------------------------------------
-   5. TABLES
-   --------------------------------------------------------- */
+/* 6. TABLES */
 table {
   width: 100% !important;
-  border-collapse: separate !important;
-  border-spacing: 0 !important;
-  margin-top: 1.25rem !important;
-  font-size: 0.88rem !important;
-  border-radius: var(--radius-md) !important;
-  overflow: hidden !important;
-  border: 1px solid var(--panel-border) !important;
+  border-collapse: collapse !important;
+  margin-top: 1rem !important;
+  font-size: 0.9rem !important;
 }
 
-th {
-  background-color: rgba(15, 23, 42, 0.95) !important;
-  color: var(--text-muted) !important;
-  font-weight: 600 !important;
-  text-transform: uppercase !important;
-  font-size: 0.75rem !important;
-  letter-spacing: 0.8px !important;
+th, td {
   padding: 0.85rem 1rem !important;
-  border-bottom: 1px solid var(--panel-border) !important;
-}
-
-td {
-  padding: 0.75rem 1rem !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
-  color: #e2e8f0 !important;
-  background-color: rgba(15, 23, 42, 0.45) !important;
-  vertical-align: middle !important;
-}
-
-tr:hover td {
-  background-color: rgba(99, 102, 241, 0.15) !important;
-  color: #ffffff !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  text-align: left !important;
 }
