@@ -170,3 +170,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 3. Event Handling
+    if (refreshBtn) refreshBtn.addEventListener("click", loadRooms);
+
+    if (tableSelect) {
+        tableSelect.addEventListener("change", () => {
+            const titleEl = document.getElementById("current-table-title");
+            if (titleEl) titleEl.textContent = tableSelect.value;
+            
+            if (tableSelect.value === "rooms") {
+                loadRooms();
+            } else {
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:1.5rem; color:#94a3b8;">ตาราง ${tableSelect.value} ยังไม่ได้เปิดใช้งานในหน้านี้</td></tr>`;
+            }
+        });
+    }
+
+    // โหลดครั้งแรก
+    loadRooms();
+});
