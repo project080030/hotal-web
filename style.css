@@ -1,5 +1,5 @@
 /* =========================================================
-   Hotel & Tour System - Ultimate Enterprise Glass UI
+   Hotel & Tour System - Ultimate Enterprise Glass UI (Fixed Header)
    ========================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
@@ -15,6 +15,7 @@
   --input-bg: rgba(15, 23, 42, 0.85);
   --radius-xl: 16px;
   --radius-md: 10px;
+  --radius-sm: 6px;
 }
 
 * {
@@ -36,19 +37,28 @@ body {
 }
 
 /* ---------------------------------------------------------
-   1. TOPBAR & NAVBAR (แก้ปัญหาข้อความทับซ้อนมุมขวา)
+   1. TOPBAR & NAVBAR (แก้ปัญหา admin@hotal.com โดนปุ่มบัง)
    --------------------------------------------------------- */
-header, nav, .navbar {
-  background: rgba(9, 13, 22, 0.9) !important;
+header, nav, .navbar, body > div:first-child {
+  background: rgba(9, 13, 22, 0.95) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border-bottom: 1px solid var(--panel-border) !important;
-  padding: 0.85rem 2rem !important;
+  padding: 0.75rem 2rem !important;
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  gap: 1.5rem !important;
+  gap: 1rem !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  position: relative !important;
+  z-index: 100 !important;
+}
+
+/* จัดระเบียบกลุ่มเมนูด้านขวา */
+header div, nav div, .navbar div {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
   flex-wrap: wrap !important;
 }
 
@@ -59,7 +69,7 @@ header *, nav *, .navbar * {
 /* ---------------------------------------------------------
    2. CONTAINERS & PANELS
    --------------------------------------------------------- */
-.container, main, body > div {
+.container, main, body > div:not(:first-child) {
   max-width: 1320px;
   margin: 0 auto;
 }
@@ -86,7 +96,7 @@ h1, h2, h3, h4, .title {
 }
 
 /* ---------------------------------------------------------
-   3. FORM INPUTS & SELECTS (อ่านง่าย ชัดเจน)
+   3. FORM INPUTS & SELECTS
    --------------------------------------------------------- */
 input[type="text"], 
 input[type="number"], 
@@ -105,7 +115,6 @@ textarea {
   margin-bottom: 0.85rem !important;
 }
 
-/* ปรับสี Placeholder ให้สว่างเห็นชัดขึ้น */
 ::placeholder {
   color: #94a3b8 !important;
   opacity: 1 !important;
@@ -148,18 +157,19 @@ button, input[type="button"], input[type="submit"] {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 0.5rem !important;
-  padding: 0.65rem 1.35rem !important;
+  gap: 0.4rem !important;
+  padding: 0.6rem 1.25rem !important;
   font-family: 'Prompt', sans-serif !important;
   font-size: 0.88rem !important;
   font-weight: 600 !important;
   border-radius: var(--radius-md) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   cursor: pointer !important;
-  transition: all 0.25s ease !important;
+  transition: all 0.2s ease !important;
   background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
   color: #ffffff !important;
   box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35) !important;
+  white-space: nowrap !important;
 }
 
 button:hover, input[type="button"]:hover, input[type="submit"]:hover {
@@ -172,32 +182,34 @@ button:active {
   transform: translateY(0) !important;
 }
 
-/* ปุ่มยกเลิก / ปุ่มลบ */
-button[class*="cancel"], button:contains("ยกเลิก") {
-  background: linear-gradient(135deg, #475569, #334155) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+/* ปุ่มกดภายในตาราง (แก้ไข / ลบ) ให้เล็กลงกำลังดี */
+td button {
+  padding: 0.35rem 0.75rem !important;
+  font-size: 0.8rem !important;
+  border-radius: var(--radius-sm) !important;
 }
 
-button[class*="delete"], button[class*="danger"], button:contains("ลบ") {
+/* ปุ่มยกเลิก */
+button[class*="cancel"], button:contains("ยกเลิก") {
+  background: linear-gradient(135deg, #475569, #334155) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* ปุ่มลบ / ออกจากระบบ */
+button[class*="delete"], button[class*="danger"], button[class*="logout"], button:contains("ลบ"), button:contains("ออกจากระบบ") {
   background: linear-gradient(135deg, #ef4444, #dc2626) !important;
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35) !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35) !important;
 }
 
 /* ---------------------------------------------------------
-   5. TABLES (ปรับ Responsive และการจัดเรียง)
+   5. TABLES
    --------------------------------------------------------- */
-.table-wrapper, div[style*="overflow"] {
-  width: 100% !important;
-  overflow-x: auto !important;
-  border-radius: var(--radius-md) !important;
-}
-
 table {
   width: 100% !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
   margin-top: 1.25rem !important;
-  font-size: 0.9rem !important;
+  font-size: 0.88rem !important;
   border-radius: var(--radius-md) !important;
   overflow: hidden !important;
   border: 1px solid var(--panel-border) !important;
@@ -208,14 +220,14 @@ th {
   color: var(--text-muted) !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
-  font-size: 0.78rem !important;
+  font-size: 0.75rem !important;
   letter-spacing: 0.8px !important;
-  padding: 1rem 1.25rem !important;
+  padding: 0.85rem 1rem !important;
   border-bottom: 1px solid var(--panel-border) !important;
 }
 
 td {
-  padding: 0.85rem 1.25rem !important;
+  padding: 0.75rem 1rem !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
   color: #e2e8f0 !important;
   background-color: rgba(15, 23, 42, 0.45) !important;
