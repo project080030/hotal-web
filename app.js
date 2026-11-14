@@ -594,81 +594,40 @@ function buildHtmlTable(dataArray) {
 // 18. AI CHAT SYSTEM
 // =====================================================
 
-async function sendChat() {
+async function sendChat() { // 1. แก้ไขจาก ync เป็น async 
     const input = document.getElementById('chat-input');
     const question = input.value.trim();
-
+    
     if (!question) return;
-
+    
     const historyBox = document.getElementById('chat-history');
     const loadingBox = document.getElementById('chat-loading');
-
+    
     historyBox.innerHTML += `
         <div class="user-message">${question}</div>
     `;
-
+    
     input.value = '';
     loadingBox.style.display = 'block';
-
     historyBox.scrollTop = historyBox.scrollHeight;
-
+    
     try {
         const response = await fetch('/api/chat', {
             method: 'POST',
-
             headers: {
                 'Content-Type': 'application/json'
             },
-
             body: JSON.stringify({
                 question: question,
                 userEmail: currentUser ? currentUser.email : 'guest'
             })
         });
 
-        const result = await response.json();
-
-        loadingBox.style.display = 'none';
-
+        // 2. ดัก Error ตรงนี้ก่อนที่จะทำ response.json()
         if (!response.ok) {
-            throw new Error(result.error || 'เกิดข้อผิดพลาดจาก Server');
+            throw new Error(`เกิดข้อผิดพลาดจาก Server (HTTP Status: ${response.status})`);
         }
 
-        let aiHtml = `
-            <div class="ai-message">
-                ${result.answer}
-            </div>
-        `;
-
-        if (result.data && result.data.length > 0) {
-            aiHtml += buildHtmlTable(result.data);
-        }
-
-        if (result.sql) {
-            aiHtml += `
-                <div class="sql-result">
-                    <strong>🔍 หลักฐาน SQL ที่ใช้:</strong>
-                    <pre>${result.sql}</pre>
-                </div>
-            `;
-        }
-
-        historyBox.innerHTML += aiHtml;
-
-    } catch (err) {
+        const result = await response.json();
+        
         loadingBox.style.display = 'none';
-
-        historyBox.innerHTML += `
-            <div class="error-message">
-                ❌ Error: ${err.message}
-            </div>
-        `;
-    }
-
-    historyBox.scrollTop = historyBox.scrollHeight;
-}
-
-
-// =====================================================
-// END OF JAVASCRIPT
-// =====================================================
