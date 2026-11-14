@@ -1,4 +1,3 @@
-
 // =====================================================
 // 1. SUPABASE CONFIGURATION
 // =====================================================
@@ -594,7 +593,7 @@ function buildHtmlTable(dataArray) {
 // 18. AI CHAT SYSTEM
 // =====================================================
 
-async function sendChat() { // 1. แก้ไขจาก ync เป็น async 
+async function sendChat() {
     const input = document.getElementById('chat-input');
     const question = input.value.trim();
     
@@ -623,7 +622,6 @@ async function sendChat() { // 1. แก้ไขจาก ync เป็น asyn
             })
         });
 
-        // 2. ดัก Error ตรงนี้ก่อนที่จะทำ response.json()
         if (!response.ok) {
             throw new Error(`เกิดข้อผิดพลาดจาก Server (HTTP Status: ${response.status})`);
         }
@@ -631,3 +629,27 @@ async function sendChat() { // 1. แก้ไขจาก ync เป็น asyn
         const result = await response.json();
         
         loadingBox.style.display = 'none';
+
+        let aiHtml = `
+            <div class="ai-message">
+                ${result.answer || 'ไม่มีคำตอบจากระบบ'}
+            </div>
+        `;
+        
+        if (result.data && result.data.length > 0) {
+            aiHtml += buildHtmlTable(result.data);
+        }
+
+        historyBox.innerHTML += aiHtml;
+        historyBox.scrollTop = historyBox.scrollHeight;
+
+    } catch (err) {
+        loadingBox.style.display = 'none';
+        historyBox.innerHTML += `
+            <div class="ai-message" style="color: red; border: 1px solid red; padding: 10px; margin-top: 10px;">
+                ❌ ขัดข้อง: ${err.message}
+            </div>
+        `;
+        historyBox.scrollTop = historyBox.scrollHeight;
+    }
+}
