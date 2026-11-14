@@ -1,22 +1,20 @@
 /* =========================================================
-   Hotel & Tour System - World-Class Enterprise UI (Dark Luxury)
+   Hotel & Tour System - World-Class SaaS (Fix Auto-fill)
    ========================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg-dark: #0b0f17;
-  --panel-bg: rgba(22, 30, 46, 0.75);
-  --panel-border: rgba(255, 255, 255, 0.08);
+  --bg-dark: #090d16;
+  --panel-bg: rgba(18, 26, 43, 0.75);
+  --panel-border: rgba(255, 255, 255, 0.1);
   --primary-glow: #6366f1;
   --primary-hover: #4f46e5;
-  --accent-cyan: #06b6d4;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
-  --input-bg: rgba(15, 23, 42, 0.6);
+  --input-bg: rgba(15, 23, 42, 0.7);
   --radius-xl: 16px;
   --radius-md: 10px;
-  --shadow-glow: 0 0 25px rgba(99, 102, 241, 0.15);
 }
 
 * {
@@ -29,8 +27,8 @@
 body {
   background-color: var(--bg-dark);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
   background-attachment: fixed;
   color: var(--text-main);
   min-height: 100vh;
@@ -38,10 +36,10 @@ body {
 }
 
 /* ---------------------------------------------------------
-   1. GLOBAL HEADER / TOPBAR (ล้ำสมัยสไตล์ SaaS)
+   1. TOPBAR & NAVBAR
    --------------------------------------------------------- */
 header, nav, .navbar {
-  background: rgba(11, 15, 23, 0.85) !important;
+  background: rgba(9, 13, 22, 0.85) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border-bottom: 1px solid var(--panel-border) !important;
@@ -51,14 +49,13 @@ header, nav, .navbar {
 
 header *, nav *, .navbar * {
   color: #ffffff !important;
-  letter-spacing: 0.3px;
 }
 
 /* ---------------------------------------------------------
-   2. MAIN CONTAINER & GLASS CARDS (เอฟเฟกต์กระจกฝ้าหรูหรา)
+   2. CONTAINERS & GLASS PANELS
    --------------------------------------------------------- */
 .container, main, body > div {
-  max-width: 1320px;
+  max-width: 1280px;
   margin: 0 auto;
 }
 
@@ -70,22 +67,21 @@ div[style*="background: rgb(255, 255, 255)"],
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border-radius: var(--radius-xl) !important;
-  padding: 2rem !important;
+  padding: 2.25rem !important;
   border: 1px solid var(--panel-border) !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), var(--shadow-glow) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.12) !important;
   margin-bottom: 2rem !important;
 }
 
 h1, h2, h3, h4, .title {
   color: #ffffff !important;
   font-weight: 600 !important;
-  letter-spacing: -0.5px !important;
+  letter-spacing: -0.4px !important;
   margin-bottom: 1.25rem !important;
-  text-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
 }
 
 /* ---------------------------------------------------------
-   3. MODERN INPUTS & DROPDOWNS (ช่องกรอกข้อมูลทรงพรีเมียม)
+   3. MODERN INPUTS & AUTOFILL OVERRIDE (แก้ช่องสีฟ้า)
    --------------------------------------------------------- */
 input[type="text"], 
 input[type="number"], 
@@ -100,13 +96,24 @@ textarea {
   font-size: 0.95rem !important;
   color: #ffffff !important;
   background-color: var(--input-bg) !important;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: all 0.25s ease !important;
+  margin-bottom: 0.75rem !important;
+}
+
+/* บังคับลบสีฟ้า Auto-fill ของ Browser */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 input:focus, select:focus, textarea:focus {
   border-color: var(--primary-glow) !important;
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25) !important;
-  background-color: rgba(15, 23, 42, 0.9) !important;
+  background-color: rgba(15, 23, 42, 0.95) !important;
   outline: none !important;
 }
 
@@ -120,21 +127,20 @@ label {
   letter-spacing: 0.5px;
 }
 
-/* Option ใน Dropdown */
 select option {
   background-color: #0f172a !important;
   color: #ffffff !important;
 }
 
 /* ---------------------------------------------------------
-   4. GLOW BUTTONS (ปุ่มกดเรืองแสงระดับองค์กร)
+   4. GLOW BUTTONS
    --------------------------------------------------------- */
 button, input[type="button"], input[type="submit"] {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 0.5rem !important;
-  padding: 0.7rem 1.4rem !important;
+  padding: 0.75rem 1.5rem !important;
   font-family: 'Prompt', sans-serif !important;
   font-size: 0.9rem !important;
   font-weight: 600 !important;
@@ -142,7 +148,7 @@ button, input[type="button"], input[type="submit"] {
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   cursor: pointer !important;
   transition: all 0.25s ease !important;
-  background: linear-gradient(135deg, var(--primary-glow), var(--primary-hover)) !important;
+  background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
   color: #ffffff !important;
   box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35) !important;
 }
@@ -157,24 +163,8 @@ button:active {
   transform: translateY(0) !important;
 }
 
-/* ปุ่ม Logout */
-button[class*="logout"], .btn-danger, button[class*="danger"] {
-  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35) !important;
-}
-
-button[class*="logout"]:hover {
-  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.55) !important;
-}
-
-/* ปุ่มรีเฟรชข้อมูล */
-button:contains("รีเฟรช"), button[onclick*="fetch"], button[onclick*="load"] {
-  background: linear-gradient(135deg, #06b6d4, #0891b2) !important;
-  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.35) !important;
-}
-
 /* ---------------------------------------------------------
-   5. ENTERPRISE DATA TABLES (ตารางข้อมูลสุดหรู)
+   5. TABLES
    --------------------------------------------------------- */
 table {
   width: 100% !important;
@@ -182,14 +172,13 @@ table {
   border-spacing: 0 !important;
   margin-top: 1.25rem !important;
   font-size: 0.9rem !important;
-  background-color: transparent !important;
   border-radius: var(--radius-md) !important;
   overflow: hidden !important;
   border: 1px solid var(--panel-border) !important;
 }
 
 th {
-  background-color: rgba(15, 23, 42, 0.8) !important;
+  background-color: rgba(15, 23, 42, 0.9) !important;
   color: var(--text-muted) !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
@@ -203,20 +192,16 @@ td {
   padding: 0.9rem 1.25rem !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
   color: #e2e8f0 !important;
-  background-color: rgba(15, 23, 42, 0.3) !important;
-}
-
-tr:last-child td {
-  border-bottom: none !important;
+  background-color: rgba(15, 23, 42, 0.4) !important;
 }
 
 tr:hover td {
-  background-color: rgba(99, 102, 241, 0.1) !important;
+  background-color: rgba(99, 102, 241, 0.12) !important;
   color: #ffffff !important;
 }
 
 /* ---------------------------------------------------------
-   6. ERROR / ALERT NOTIFICATIONS
+   6. ERROR NOTIFICATIONS
    --------------------------------------------------------- */
 .error, [class*="error"] {
   color: #fca5a5 !important;
@@ -225,6 +210,5 @@ tr:hover td {
   border: 1px solid rgba(239, 68, 68, 0.3) !important;
   padding: 0.75rem 1rem !important;
   border-radius: var(--radius-md) !important;
-  margin-top: 0.75rem !important;
-  backdrop-filter: blur(8px) !important;
+  margin-top: 0.85rem !important;
 }
