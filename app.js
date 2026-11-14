@@ -1,131 +1,176 @@
-/* ====== ตั้งค่า (แก้ 2 ค่านี้ก่อน) ====== */
-const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR-ANON-KEY';
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel & Tour System - Luxury Agoda Portal</title>
+  <!-- Google Fonts: Kanit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-/* ตารางที่จัดการได้: แก้ชื่อตาราง/คอลัมน์ให้ตรงกับฐานข้อมูลจริง */
-const TABLES = {
-  rooms:      { label: 'rooms (ห้องพัก)', pk: 'room_id',     fields: ['room_number', 'room_type_id', 'status'] },
-  room_types: { label: 'room_types (ประเภทห้อง)', pk: 'room_type_id', fields: ['type_name', 'price'] },
-  customers:  { label: 'customers (ลูกค้า)', pk: 'customer_id', fields: ['name', 'phone', 'email'] },
-  bookings:   { label: 'bookings (การจอง)', pk: 'booking_id', fields: ['customer_id', 'room_id', 'check_in', 'check_out'] },
-  tours:      { label: 'tours (ทัวร์)', pk: 'tour_id', fields: ['tour_name', 'price'] }
-};
-/* ชื่อ View ที่ใช้ในรายงานสรุป (ใส่ให้ครบ 6 อัน) */
-const VIEWS = ['view_1', 'view_2', 'view_3', 'view_4', 'view_5', 'view_6'];
+  <!-- 1. TOP NAVBAR -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <i class="fa-solid fa-hotel brand-icon"></i>
+      <span class="brand-text">Hotel & Tour System</span>
+    </div>
+    
+    <nav class="nav-menu">
+      <button class="nav-tab active"><i class="fa-solid fa-database"></i> จัดการข้อมูล (ทุกตาราง)</button>
+      <button class="nav-tab"><i class="fa-solid fa-chart-pie"></i> รายงานสรุป (6 Views)</button>
+      <button class="nav-tab ai-btn"><i class="fa-solid fa-robot"></i> AI ผู้ช่วยข้อมูล</button>
+    </nav>
 
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const $ = id => document.getElementById(id);
-const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-let current = Object.keys(TABLES)[0], rows = [], editId = null, userEmail = '';
+    <div class="user-profile">
+      <div class="user-info">
+        <i class="fa-solid fa-circle-user avatar"></i>
+        <span class="user-email">admin@hotal.com</span>
+      </div>
+      <button class="btn-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> ออกจากระบบ</button>
+    </div>
+  </header>
 
-function toast(msg, bad) {
-  const t = $('toast'); t.textContent = msg; t.className = 'toast show' + (bad ? ' bad' : '');
-  clearTimeout(toast.t); toast.t = setTimeout(() => t.className = 'toast', 2800);
-}
+  <!-- 2. HERO BANNER SECTION -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <h1 class="hero-title">ท่องโลกทั้งใบในราคาถูกลง</h1>
+      <p class="hero-subtitle">ระบบบริหารจัดการห้องพัก และการท่องเที่ยวแบบครบวงจร</p>
+    </div>
+  </section>
 
-/* ====== AUTH ====== */
-async function init() {
-  const { data } = await sb.auth.getSession();
-  data.session ? enter(data.session.user) : ($('login').hidden = false);
-}
-function enter(user) {
-  userEmail = user.email; $('user-email').textContent = userEmail;
-  $('login').hidden = true; $('app').hidden = false;
-  $('table-select').innerHTML = Object.entries(TABLES).map(([k, v]) => `<option value="${k}">${esc(v.label)}</option>`).join('');
-  $('view-select').innerHTML = VIEWS.map(v => `<option>${esc(v)}</option>`).join('');
-  buildForm(); loadTable();
-  if (!$('chat-box').children.length) addMsg('bot', 'สวัสดีครับ ผมคือผู้ช่วย AI ของระบบ มีอะไรให้ช่วยไหมครับ');
-}
-$('login-form').addEventListener('submit', async e => {
-  e.preventDefault(); $('login-err').textContent = '';
-  const { data, error } = await sb.auth.signInWithPassword({ email: $('login-email').value, password: $('login-pass').value });
-  error ? $('login-err').textContent = 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' : enter(data.user);
-});
-$('btn-logout').addEventListener('click', async () => {
-  await sb.auth.signOut(); $('app').hidden = true; $('login').hidden = false;
-});
+  <!-- 3. MAIN CONTAINER -->
+  <main class="main-container">
 
-/* ====== TABS ====== */
-document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => {
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === b));
-  ['crud', 'report', 'ai'].forEach(n => $('tab-' + n).hidden = n !== b.dataset.tab);
-  if (b.dataset.tab === 'report') loadView();
-}));
+    <!-- FLOATING CARD 1: FORM MANAGEMENTS -->
+    <div class="agoda-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <i class="fa-solid fa-sliders header-icon"></i>
+          <div>
+            <h2>จัดการข้อมูล (CRUD ทุกตาราง)</h2>
+            <p class="subtitle">เลือกตารางที่ต้องการเพิ่ม แก้ไข หรือลบข้อมูลในระบบ</p>
+          </div>
+        </div>
+        
+        <div class="table-selector-box">
+          <label for="table-select"><i class="fa-solid fa-table-cells"></i> ตารางข้อมูล</label>
+          <select id="table-select" class="custom-select">
+            <option value="rooms">rooms (ห้องพัก)</option>
+            <option value="room_types">room_types (ประเภทห้อง)</option>
+            <option value="bookings">bookings (การจอง)</option>
+            <option value="guests">guests (ผู้เข้าพัก)</option>
+          </select>
+        </div>
+      </div>
 
-/* ====== CRUD ====== */
-function buildForm() {
-  const t = TABLES[current];
-  $('form-fields').innerHTML = t.fields.map(f => `<label>${esc(f)}<input name="${esc(f)}" placeholder="กรอก ${esc(f)}"></label>`).join('');
-  $('table-title').innerHTML = `ข้อมูลในตาราง: <b>${esc(current)}</b> <span class="muted">(แสดง 20 แถวล่าสุด)</span>`;
-  resetForm();
-}
-function resetForm() {
-  editId = null; $('crud-form').reset();
-  $('btn-save').textContent = 'เพิ่มข้อมูลใหม่'; $('btn-cancel').hidden = true;
-}
-function renderTable(el, data, cols, withActions) {
-  if (!data.length) { el.innerHTML = `<tr><td class="empty">ยังไม่มีข้อมูล</td></tr>`; return; }
-  el.innerHTML = `<thead><tr>${withActions ? '<th>จัดการ</th>' : ''}${cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>` +
-    data.map((r, i) => `<tr>${withActions ? `<td class="acts"><button class="btn ghost sm" data-edit="${i}">แก้ไข</button><button class="btn del sm" data-del="${i}">ลบ</button></td>` : ''}${cols.map(c => `<td>${esc(r[c])}</td>`).join('')}</tr>`).join('') + '</tbody>';
-}
-async function loadTable() {
-  const t = TABLES[current];
-  const { data, error } = await sb.from(current).select('*').order(t.pk, { ascending: false }).limit(20);
-  if (error) { toast('โหลดข้อมูลไม่สำเร็จ: ' + error.message, true); rows = []; renderTable($('data-table'), [], []); return; }
-  rows = data; renderTable($('data-table'), rows, [t.pk, ...t.fields], true);
-}
-$('table-select').addEventListener('change', e => { current = e.target.value; buildForm(); loadTable(); });
-$('btn-refresh').addEventListener('click', loadTable);
-$('btn-cancel').addEventListener('click', resetForm);
-$('crud-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const t = TABLES[current], payload = {};
-  t.fields.forEach(f => { const v = e.target.elements[f].value.trim(); payload[f] = v === '' ? null : v; });
-  const q = editId === null ? sb.from(current).insert(payload) : sb.from(current).update(payload).eq(t.pk, editId);
-  const { error } = await q;
-  if (error) return toast('บันทึกไม่สำเร็จ: ' + error.message, true);
-  toast(editId === null ? 'เพิ่มข้อมูลแล้ว' : 'บันทึกการแก้ไขแล้ว'); resetForm(); loadTable();
-});
-$('data-table').addEventListener('click', async e => {
-  const t = TABLES[current], b = e.target.closest('button'); if (!b) return;
-  if (b.dataset.edit !== undefined) {
-    const r = rows[b.dataset.edit]; editId = r[t.pk];
-    t.fields.forEach(f => $('crud-form').elements[f].value = r[f] ?? '');
-    $('btn-save').textContent = 'บันทึกการแก้ไข'; $('btn-cancel').hidden = false; scrollTo({ top: 0, behavior: 'smooth' });
-  } else if (b.dataset.del !== undefined && confirm('ยืนยันการลบข้อมูลนี้?')) {
-    const { error } = await sb.from(current).delete().eq(t.pk, rows[b.dataset.del][t.pk]);
-    error ? toast('ลบไม่สำเร็จ: ' + error.message, true) : (toast('ลบข้อมูลแล้ว'), loadTable());
-  }
-});
+      <!-- FORM FIELDS GRID -->
+      <form class="crud-form" id="crud-form" onsubmit="return false;">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="room_number">ROOM_NUMBER</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-door-closed input-icon"></i>
+              <input type="text" id="room_number" placeholder="กรอกค่า room_number" autocomplete="off">
+            </div>
+          </div>
 
-/* ====== REPORT ====== */
-async function loadView() {
-  const { data, error } = await sb.from($('view-select').value).select('*').limit(100);
-  if (error) { toast('โหลดรายงานไม่สำเร็จ: ' + error.message, true); return renderTable($('report-table'), [], []); }
-  renderTable($('report-table'), data, data[0] ? Object.keys(data[0]) : [], false);
-}
-$('view-select').addEventListener('change', loadView);
+          <div class="form-field">
+            <label for="room_type_id">ROOM_TYPE_ID</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-key input-icon"></i>
+              <input type="text" id="room_type_id" placeholder="กรอกค่า room_type_id" autocomplete="off">
+            </div>
+          </div>
 
-/* ====== CHAT (บันทึก chat_logs ที่ฝั่ง /api/chat) ====== */
-let sid; try { sid = sessionStorage.sid || (sessionStorage.sid = crypto.randomUUID()); } catch { sid = Date.now() + '-' + Math.random(); }
-const history = [];
-function addMsg(who, text) {
-  const d = document.createElement('div'); d.className = 'msg ' + who; d.textContent = text;
-  $('chat-box').appendChild(d); $('chat-box').scrollTop = 1e9; return d;
-}
-$('chat-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const text = $('chat-input').value.trim(); if (!text) return;
-  $('chat-input').value = ''; $('chat-send').disabled = true;
-  addMsg('user', text); const wait = addMsg('bot typing', 'กำลังพิมพ์…');
-  try {
-    const r = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ session_id: sid, user_email: userEmail, message: text, history: history.slice(-10) }) });
-    const j = await r.json(); if (!r.ok) throw new Error(j.error || r.status);
-    wait.className = 'msg bot'; wait.textContent = j.reply;
-    history.push({ role: 'user', content: text }, { role: 'assistant', content: j.reply });
-  } catch (err) { wait.className = 'msg bot'; wait.textContent = 'ขออภัย เกิดข้อผิดพลาด: ' + err.message; }
-  $('chat-send').disabled = false; $('chat-input').focus();
-});
+          <div class="form-field">
+            <label for="status">STATUS</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-circle-check input-icon"></i>
+              <input type="text" id="status" placeholder="กรอกค่า status" autocomplete="off">
+            </div>
+          </div>
+        </div>
 
-init();
+        <div class="form-actions">
+          <button type="submit" class="btn-agoda-primary"><i class="fa-solid fa-plus"></i> เพิ่มข้อมูลใหม่</button>
+          <button type="reset" class="btn-agoda-secondary"><i class="fa-solid fa-xmark"></i> ยกเลิกการแก้ไข</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- FLOATING CARD 2: DATA TABLE -->
+    <div class="agoda-card">
+      <div class="card-header table-header-flex">
+        <div class="card-title-group">
+          <i class="fa-solid fa-list-check header-icon"></i>
+          <div>
+            <h2>ข้อมูลในตาราง: rooms</h2>
+            <span class="badge-count">(แสดง 20 แถวล่าสุด)</span>
+          </div>
+        </div>
+        <button class="btn-refresh"><i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล</button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="agoda-table">
+          <thead>
+            <tr>
+              <th class="text-center" style="width: 140px;">จัดการ</th>
+              <th>ROOM_ID</th>
+              <th>ROOM_NUMBER</th>
+              <th>ROOM_TYPE_ID</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-center">
+                <div class="action-btn-group">
+                  <button class="btn-tbl-edit"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+                  <button class="btn-tbl-delete"><i class="fa-solid fa-trash"></i> ลบ</button>
+                </div>
+              </td>
+              <td><span class="id-badge">70</span></td>
+              <td><strong class="room-num">710</strong></td>
+              <td><span class="type-badge">4</span></td>
+              <td><span class="status-badge status-maint">maintenance</span></td>
+            </tr>
+            <tr>
+              <td class="text-center">
+                <div class="action-btn-group">
+                  <button class="btn-tbl-edit"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+                  <button class="btn-tbl-delete"><i class="fa-solid fa-trash"></i> ลบ</button>
+                </div>
+              </td>
+              <td><span class="id-badge">69</span></td>
+              <td><strong class="room-num">709</strong></td>
+              <td><span class="type-badge">3</span></td>
+              <td><span class="status-badge status-occupied">occupied</span></td>
+            </tr>
+            <tr>
+              <td class="text-center">
+                <div class="action-btn-group">
+                  <button class="btn-tbl-edit"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+                  <button class="btn-tbl-delete"><i class="fa-solid fa-trash"></i> ลบ</button>
+                </div>
+              </td>
+              <td><span class="id-badge">68</span></td>
+              <td><strong class="room-num">708</strong></td>
+              <td><span class="type-badge">1</span></td>
+              <td><span class="status-badge status-avail">available</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>
