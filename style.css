@@ -1,18 +1,18 @@
 /* =========================================================
-   Hotel & Tour System - World-Class SaaS (Fix Auto-fill)
+   Hotel & Tour System - Ultimate Enterprise Glass UI
    ========================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
   --bg-dark: #090d16;
-  --panel-bg: rgba(18, 26, 43, 0.75);
-  --panel-border: rgba(255, 255, 255, 0.1);
+  --panel-bg: rgba(18, 26, 43, 0.85);
+  --panel-border: rgba(255, 255, 255, 0.12);
   --primary-glow: #6366f1;
   --primary-hover: #4f46e5;
   --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --input-bg: rgba(15, 23, 42, 0.7);
+  --text-muted: #cbd5e1;
+  --input-bg: rgba(15, 23, 42, 0.85);
   --radius-xl: 16px;
   --radius-md: 10px;
 }
@@ -32,19 +32,24 @@ body {
   background-attachment: fixed;
   color: var(--text-main);
   min-height: 100vh;
-  padding-bottom: 3rem;
+  padding-bottom: 4rem;
 }
 
 /* ---------------------------------------------------------
-   1. TOPBAR & NAVBAR
+   1. TOPBAR & NAVBAR (แก้ปัญหาข้อความทับซ้อนมุมขวา)
    --------------------------------------------------------- */
 header, nav, .navbar {
-  background: rgba(9, 13, 22, 0.85) !important;
+  background: rgba(9, 13, 22, 0.9) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border-bottom: 1px solid var(--panel-border) !important;
-  padding: 1rem 2.5rem !important;
+  padding: 0.85rem 2rem !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 1.5rem !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  flex-wrap: wrap !important;
 }
 
 header *, nav *, .navbar * {
@@ -52,10 +57,10 @@ header *, nav *, .navbar * {
 }
 
 /* ---------------------------------------------------------
-   2. CONTAINERS & GLASS PANELS
+   2. CONTAINERS & PANELS
    --------------------------------------------------------- */
 .container, main, body > div {
-  max-width: 1280px;
+  max-width: 1320px;
   margin: 0 auto;
 }
 
@@ -67,9 +72,9 @@ div[style*="background: rgb(255, 255, 255)"],
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border-radius: var(--radius-xl) !important;
-  padding: 2.25rem !important;
+  padding: 2rem !important;
   border: 1px solid var(--panel-border) !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.12) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.1) !important;
   margin-bottom: 2rem !important;
 }
 
@@ -81,7 +86,7 @@ h1, h2, h3, h4, .title {
 }
 
 /* ---------------------------------------------------------
-   3. MODERN INPUTS & AUTOFILL OVERRIDE (แก้ช่องสีฟ้า)
+   3. FORM INPUTS & SELECTS (อ่านง่าย ชัดเจน)
    --------------------------------------------------------- */
 input[type="text"], 
 input[type="number"], 
@@ -96,11 +101,16 @@ textarea {
   font-size: 0.95rem !important;
   color: #ffffff !important;
   background-color: var(--input-bg) !important;
-  transition: all 0.25s ease !important;
-  margin-bottom: 0.75rem !important;
+  transition: all 0.2s ease !important;
+  margin-bottom: 0.85rem !important;
 }
 
-/* บังคับลบสีฟ้า Auto-fill ของ Browser */
+/* ปรับสี Placeholder ให้สว่างเห็นชัดขึ้น */
+::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus,
@@ -113,18 +123,17 @@ input:-webkit-autofill:active {
 input:focus, select:focus, textarea:focus {
   border-color: var(--primary-glow) !important;
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25) !important;
-  background-color: rgba(15, 23, 42, 0.95) !important;
   outline: none !important;
 }
 
 label {
-  font-size: 0.85rem !important;
-  font-weight: 500 !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
   color: var(--text-muted) !important;
   margin-bottom: 0.4rem !important;
   display: inline-block !important;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 }
 
 select option {
@@ -133,16 +142,16 @@ select option {
 }
 
 /* ---------------------------------------------------------
-   4. GLOW BUTTONS
+   4. BUTTONS & ACTIONS
    --------------------------------------------------------- */
 button, input[type="button"], input[type="submit"] {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 0.5rem !important;
-  padding: 0.75rem 1.5rem !important;
+  padding: 0.65rem 1.35rem !important;
   font-family: 'Prompt', sans-serif !important;
-  font-size: 0.9rem !important;
+  font-size: 0.88rem !important;
   font-weight: 600 !important;
   border-radius: var(--radius-md) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
@@ -163,9 +172,26 @@ button:active {
   transform: translateY(0) !important;
 }
 
+/* ปุ่มยกเลิก / ปุ่มลบ */
+button[class*="cancel"], button:contains("ยกเลิก") {
+  background: linear-gradient(135deg, #475569, #334155) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+button[class*="delete"], button[class*="danger"], button:contains("ลบ") {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35) !important;
+}
+
 /* ---------------------------------------------------------
-   5. TABLES
+   5. TABLES (ปรับ Responsive และการจัดเรียง)
    --------------------------------------------------------- */
+.table-wrapper, div[style*="overflow"] {
+  width: 100% !important;
+  overflow-x: auto !important;
+  border-radius: var(--radius-md) !important;
+}
+
 table {
   width: 100% !important;
   border-collapse: separate !important;
@@ -178,7 +204,7 @@ table {
 }
 
 th {
-  background-color: rgba(15, 23, 42, 0.9) !important;
+  background-color: rgba(15, 23, 42, 0.95) !important;
   color: var(--text-muted) !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
@@ -189,26 +215,14 @@ th {
 }
 
 td {
-  padding: 0.9rem 1.25rem !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  padding: 0.85rem 1.25rem !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
   color: #e2e8f0 !important;
-  background-color: rgba(15, 23, 42, 0.4) !important;
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  vertical-align: middle !important;
 }
 
 tr:hover td {
-  background-color: rgba(99, 102, 241, 0.12) !important;
+  background-color: rgba(99, 102, 241, 0.15) !important;
   color: #ffffff !important;
-}
-
-/* ---------------------------------------------------------
-   6. ERROR NOTIFICATIONS
-   --------------------------------------------------------- */
-.error, [class*="error"] {
-  color: #fca5a5 !important;
-  font-weight: 500 !important;
-  background-color: rgba(239, 68, 68, 0.15) !important;
-  border: 1px solid rgba(239, 68, 68, 0.3) !important;
-  padding: 0.75rem 1rem !important;
-  border-radius: var(--radius-md) !important;
-  margin-top: 0.85rem !important;
 }
