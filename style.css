@@ -1,63 +1,208 @@
-* { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-body { margin: 0; background-color: #f1f5f9; color: #1e293b; }
-
-.navbar {
-    background-color: #0f172a; color: white; padding: 15px 30px;
-    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+/* =========================================================
+   1. GLOBAL & RESET STYLES
+   ========================================================= */
+:root {
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --bg-color: #f8fafc;
+  --card-bg: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --danger-color: #ef4444;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.05);
+  --radius-md: 10px;
+  --radius-lg: 16px;
 }
-.logo { font-size: 1.25rem; font-weight: bold; }
-.nav-links { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Kanit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+}
+
+/* =========================================================
+   2. NAVBAR & HEADER
+   ========================================================= */
+header, .navbar {
+  background: #1e293b;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-md);
+}
+
+.navbar .brand {
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
 .nav-btn {
-    background: transparent; color: #cbd5e1; border: none; padding: 8px 14px;
-    cursor: pointer; border-radius: 6px; font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
-.nav-btn.active, .nav-btn:hover { background-color: #2563eb; color: white; }
-.user-badge { background: #1e293b; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; color: #38bdf8; }
-.btn-logout { background: #ef4444; color: white; border: none; padding: 7px 12px; border-radius: 6px; cursor: pointer; }
 
-.container { max-width: 1150px; margin: 25px auto; padding: 0 20px; }
-.card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-bottom: 20px; }
-.auth-box { max-width: 440px; margin: 60px auto; text-align: center; }
-.subtitle { color: #64748b; font-size: 0.9rem; margin-bottom: 18px; }
-
-input, select {
-    padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;
-    font-size: 0.95rem; width: 100%; margin-bottom: 12px;
+.nav-btn:hover, .nav-btn.active {
+  background: var(--primary-color);
+  color: #ffffff;
 }
-.form-row { display: flex; gap: 10px; flex-wrap: wrap; }
-.form-row input, .form-row select { flex: 1; min-width: 200px; margin-bottom: 0; }
-.form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: 15px; }
-.form-grid label { display: block; font-size: 0.82rem; font-weight: bold; color: #475569; margin-bottom: 4px; }
-.form-grid input { margin-bottom: 0; }
 
-.btn-group { display: flex; gap: 10px; }
-.btn-primary { background: #2563eb; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-.btn-primary:hover { background: #1d4ed8; }
-.btn-secondary { background: #64748b; color: white; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; }
-.btn-small { background: #0ea5e9; color: white; border: none; padding: 7px 14px; border-radius: 6px; cursor: pointer; }
-.btn-edit { background: #f59e0b; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 4px; }
-.btn-del { background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
-
-.table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
-.table-responsive { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-th, td { border: 1px solid #e2e8f0; padding: 9px 12px; text-align: left; white-space: nowrap; }
-th { background-color: #f8fafc; font-weight: bold; color: #334155; }
-
-/* Chat Styles */
-.chat-history {
-    height: 420px; overflow-y: auto; border: 1px solid #cbd5e1;
-    padding: 15px; border-radius: 8px; background: #f8fafc; margin-bottom: 15px;
-    display: flex; flex-direction: column; gap: 12px;
+/* =========================================================
+   3. MAIN CONTAINER & CARDS
+   ========================================================= */
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
 }
-.chat-bubble { padding: 12px 16px; border-radius: 10px; max-width: 85%; line-height: 1.5; }
-.chat-bubble.user { background: #2563eb; color: white; align-self: flex-end; }
-.chat-bubble.ai { background: white; border: 1px solid #cbd5e1; align-self: flex-start; width: 100%; max-width: 100%; }
-.sql-evidence {
-    background: #0f172a; color: #38bdf8; padding: 10px 12px; border-radius: 6px;
-    font-family: monospace; font-size: 0.85rem; margin-top: 10px; overflow-x: auto;
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
 }
-.chat-input-box { display: flex; gap: 10px; }
-.chat-input-box input { margin-bottom: 0; }
-.loading-box { padding: 10px; background: #fef3c7; color: #92400e; border-radius: 6px; margin-bottom: 10px; text-align: center; font-weight: bold; }
-.msg-text { color: #dc2626; font-size: 0.9rem; margin-top: 10px; }
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* =========================================================
+   4. FORM ELEMENTS & INPUTS
+   ========================================================= */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+input[type="text"], input[type="number"], select {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: #fff;
+}
+
+input:focus, select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* =========================================================
+   5. BUTTONS & ACTIONS
+   ========================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* =========================================================
+   6. TABLES & DATA PRESENTATION
+   ========================================================= */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+th {
+  background-color: #f1f5f9;
+  color: var(--text-muted);
+  padding: 0.85rem 1rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-color);
+}
+
+td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background-color: #f8fafc;
+}
