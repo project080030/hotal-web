@@ -1,120 +1,176 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel & Tour Management System (AIE313)</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel & Tour System - Luxury Agoda Portal</title>
+  <!-- Google Fonts: Kanit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">🏨 Hotel & Tour System</div>
-        <div class="nav-links" id="nav-links" style="display: none;">
-            <button type="button" onclick="showTab('crud-tab', this)" class="nav-btn active">จัดการข้อมูล (ทุกตาราง)</button>
-            <button type="button" onclick="showTab('views-tab', this)" class="nav-btn">รายงานสรุป (6 Views)</button>
-            <button type="button" onclick="showTab('chat-tab', this)" class="nav-btn">🤖 AI ผู้ช่วยข้อมูล</button>
-            <span id="user-display" class="user-badge"></span>
-            <button type="button" onclick="logout()" class="btn-logout">ออกจากระบบ</button>
-        </div>
+
+  <!-- 1. TOP NAVBAR -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <i class="fa-solid fa-hotel brand-icon"></i>
+      <span class="brand-text">Hotel & Tour System</span>
+    </div>
+    
+    <nav class="nav-menu">
+      <button class="nav-tab active"><i class="fa-solid fa-database"></i> จัดการข้อมูล (ทุกตาราง)</button>
+      <button class="nav-tab"><i class="fa-solid fa-chart-pie"></i> รายงานสรุป (6 Views)</button>
+      <button class="nav-tab ai-btn"><i class="fa-solid fa-robot"></i> AI ผู้ช่วยข้อมูล</button>
     </nav>
 
-    <div class="container">
-        <!-- 1. หน้า Login / Register -->
-        <section id="auth-section" class="card auth-box">
-            <h2>เข้าสู่ระบบ / สมัครสมาชิก</h2>
-            <p class="subtitle">เข้าสู่ระบบเพื่อจัดการฐานข้อมูลและใช้งาน AI Chat</p>
-            <input type="text" id="auth-name" placeholder="ชื่อ-นามสกุล (กรอกเฉพาะตอนสมัครสมาชิก)">
-            <input type="email" id="auth-email" placeholder="อีเมล (เช่น admin@hotel.com)" required>
-            <input type="password" id="auth-password" placeholder="รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)" required>
-            <div class="btn-group">
-                <button type="button" onclick="login()" class="btn-primary">เข้าสู่ระบบ (Login)</button>
-                <button type="button" onclick="register()" class="btn-secondary">สมัครสมาชิก (Register)</button>
+    <div class="user-profile">
+      <div class="user-info">
+        <i class="fa-solid fa-circle-user avatar"></i>
+        <span class="user-email">admin@hotal.com</span>
+      </div>
+      <button class="btn-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> ออกจากระบบ</button>
+    </div>
+  </header>
+
+  <!-- 2. HERO BANNER SECTION -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <h1 class="hero-title">ท่องโลกทั้งใบในราคาถูกลง</h1>
+      <p class="hero-subtitle">ระบบบริหารจัดการห้องพัก และการท่องเที่ยวแบบครบวงจร</p>
+    </div>
+  </section>
+
+  <!-- 3. MAIN CONTAINER -->
+  <main class="main-container">
+
+    <!-- FLOATING CARD 1: FORM MANAGEMENTS -->
+    <div class="agoda-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <i class="fa-solid fa-sliders header-icon"></i>
+          <div>
+            <h2>จัดการข้อมูล (CRUD ทุกตาราง)</h2>
+            <p class="subtitle">เลือกตารางที่ต้องการเพิ่ม แก้ไข หรือลบข้อมูลในระบบ</p>
+          </div>
+        </div>
+        
+        <div class="table-selector-box">
+          <label for="table-select"><i class="fa-solid fa-table-cells"></i> ตารางข้อมูล</label>
+          <select id="table-select" class="custom-select">
+            <option value="rooms">rooms (ห้องพัก)</option>
+            <option value="room_types">room_types (ประเภทห้อง)</option>
+            <option value="bookings">bookings (การจอง)</option>
+            <option value="guests">guests (ผู้เข้าพัก)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- FORM FIELDS GRID -->
+      <form class="crud-form" id="crud-form" onsubmit="return false;">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="room_number">ROOM_NUMBER</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-door-closed input-icon"></i>
+              <input type="text" id="room_number" placeholder="กรอกค่า room_number" autocomplete="off">
             </div>
-            <p id="auth-msg" class="msg-text"></p>
-        </section>
+          </div>
 
-        <!-- 2. หน้าจัดการข้อมูลแบบ Dynamic CRUD -->
-        <section id="crud-tab" class="tab-content" style="display: none;">
-            <div class="card">
-                <div class="table-header">
-                    <h2>จัดการข้อมูล (CRUD ทุกตาราง)</h2>
-                    <select id="crud-table-selector" onchange="onSelectCrudTable()" style="max-width: 280px; margin:0;">
-                        <option value="rooms">ตาราง: rooms (ห้องพัก)</option>
-                        <option value="room_types">ตาราง: room_types (ประเภทห้อง)</option>
-                        <option value="customers">ตาราง: customers (ลูกค้า)</option>
-                        <option value="staff">ตาราง: staff (พนักงาน)</option>
-                        <option value="promotions">ตาราง: promotions (โปรโมชั่น)</option>
-                        <option value="room_bookings">ตาราง: room_bookings (จองห้อง)</option>
-                        <option value="payments">ตาราง: payments (ชำระเงิน)</option>
-                        <option value="categories">ตาราง: categories (หมวดอาหาร)</option>
-                        <option value="menu_items">ตาราง: menu_items (เมนูอาหาร)</option>
-                        <option value="room_service_orders">ตาราง: room_service_orders (สั่งอาหาร)</option>
-                        <option value="order_details">ตาราง: order_details (รายละเอียดออเดอร์)</option>
-                        <option value="tour_guides">ตาราง: tour_guides (ไกด์ทัวร์)</option>
-                        <option value="tour_packages">ตาราง: tour_packages (แพ็กเกจทัวร์)</option>
-                        <option value="tour_bookings">ตาราง: tour_bookings (จองทัวร์)</option>
-                        <option value="reviews">ตาราง: reviews (รีวิว)</option>
-                    </select>
-                </div>
-
-                <div id="dynamic-form-fields" class="form-grid"></div>
-                
-                <div style="margin-top: 15px;">
-                    <button type="button" onclick="saveDynamicRecord()" id="btn-save-record" class="btn-primary">➕ เพิ่มข้อมูลใหม่</button>
-                    <button type="button" onclick="resetDynamicForm()" id="btn-cancel-record" class="btn-secondary" style="display:none;">ยกเลิกการแก้ไข</button>
-                </div>
+          <div class="form-field">
+            <label for="room_type_id">ROOM_TYPE_ID</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-key input-icon"></i>
+              <input type="text" id="room_type_id" placeholder="กรอกค่า room_type_id" autocomplete="off">
             </div>
+          </div>
 
-            <div class="card">
-                <div class="table-header">
-                    <h3 id="crud-table-title">ข้อมูลในตาราง</h3>
-                    <button type="button" onclick="loadCrudTableData()" class="btn-small">🔄 รีเฟรชข้อมูล</button>
-                </div>
-                <div class="table-responsive" id="crud-table-container"></div>
+          <div class="form-field">
+            <label for="status">STATUS</label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-circle-check input-icon"></i>
+              <input type="text" id="status" placeholder="กรอกค่า status" autocomplete="off">
             </div>
-        </section>
+          </div>
+        </div>
 
-        <!-- 3. หน้าแสดงผลจาก 6 Views -->
-        <section id="views-tab" class="tab-content" style="display: none;">
-            <div class="card">
-                <h2>รายงานสรุปข้อมูลจากฐานข้อมูล (6 Views)</h2>
-                <div class="form-row">
-                    <select id="view-selector" onchange="loadSelectedView()">
-                        <option value="view_room_bookings">1. สรุปการจองห้องพัก (view_room_bookings)</option>
-                        <option value="view_room_service_details">2. รายละเอียดสั่งอาหาร (view_room_service_details)</option>
-                        <option value="view_tour_bookings">3. สรุปการจองทัวร์ (view_tour_bookings)</option>
-                        <option value="view_payment_summary">4. สรุปการชำระเงิน (view_payment_summary)</option>
-                        <option value="view_all_reviews">5. รวมรีวิวทั้งหมด (view_all_reviews)</option>
-                        <option value="view_available_rooms">6. ห้องพักที่ว่างพร้อมใช้งาน (view_available_rooms)</option>
-                    </select>
-                    <button type="button" onclick="loadSelectedView()" class="btn-primary">ดึงข้อมูล View</button>
-                </div>
-                <div class="table-responsive" id="view-result-container" style="margin-top: 15px;"></div>
-            </div>
-        </section>
-
-        <!-- 4. หน้า Chat + Gemini LLM -->
-        <section id="chat-tab" class="tab-content" style="display: none;">
-            <div class="card chat-container">
-                <h2>🤖 ถาม-ตอบข้อมูลด้วย Gemini AI</h2>
-                <p class="subtitle">ตัวอย่างคำถาม: "มีห้องว่างกี่ห้อง", "สรุปรายได้รวมจากการจองห้องพัก", "ลูกค้าคนไหนมียอดจองสูงสุด"</p>
-                
-                <div id="chat-history" class="chat-history">
-                    <div class="chat-bubble ai">สวัสดีครับ! ผมคือผู้ช่วย AI ประจำระบบโรงแรมและทัวร์ พิมพ์คำถามที่ต้องการค้นหาข้อมูลได้เลยครับ</div>
-                </div>
-
-                <div id="chat-loading" class="loading-box" style="display: none;">
-                    ⏳ กำลังให้ Gemini วิเคราะห์คำถาม สร้างคำสั่ง SQL และดึงข้อมูลจากฐานข้อมูล...
-                </div>
-
-                <div class="chat-input-box">
-                    <input type="text" id="chat-input" placeholder="พิมพ์คำถามภาษาไทยหรืออังกฤษที่นี่..." onkeypress="if(event.key==='Enter') sendChat()">
-                    <button type="button" onclick="sendChat()" class="btn-primary">ส่งคำถาม</button>
-                </div>
-            </div>
-        </section>
+        <div class="form-actions">
+          <button type="submit" class="btn-agoda-primary"><i class="fa-solid fa-plus"></i> เพิ่มข้อมูลใหม่</button>
+          <button type="reset" class="btn-agoda-secondary"><i class="fa-solid fa-xmark"></i> ยกเลิกการแก้ไข</button>
+        </div>
+      </form>
     </div>
 
-    <script src="app.js" defer></script>
+    <!-- FLOATING CARD 2: DATA TABLE -->
+    <div class="agoda-card">
+      <div class="card-header table-header-flex">
+        <div class="card-title-group">
+          <i class="fa-solid fa-list-check header-icon"></i>
+          <div>
+            <h2>ข้อมูลในตาราง: rooms</h2>
+            <span class="badge-count">(แสดง 20 แถวล่าสุด)</span>
+          </div>
+        </div>
+        <button class="btn-refresh"><i class="fa-solid fa-rotate-right"></i> รีเฟรชข้อมูล</button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="agoda-table">
+          <thead>
+            <tr>
+              <th class="text-center" style="width: 140px;">จัดการ</th>
+              <th>ROOM_ID</th>
+              <th>ROOM_NUMBER</th>
+              <th>ROOM_TYPE_ID</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-center">
+                <div class="action-btn-group">
+                  <button class="btn-tbl-edit"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+                  <button class="btn-tbl-delete"><i class="fa-solid fa-trash"></i> ลบ</button>
+                </div>
+              </td>
+              <td><span class="id-badge">70</span></td>
+              <td><strong class="room-num">710</strong></td>
+              <td><span class="type-badge">4</span></td>
+              <td><span class="status-badge status-maint">maintenance</span></td>
+            </tr>
+            <tr>
+              <td class="text-center">
+                <div class="action-btn-group">
+                  <button class="btn-tbl-edit"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+                  <button class="btn-tbl-delete"><i class="fa-solid fa-trash"></i> ลบ</button>
+                </div>
+              </td>
+              <td><span class="id-badge">69</span></td>
+              <td><strong class="room-num">709</strong></td>
+              <td><span class="type-badge">3</span></td>
+              <td><span class="status-badge status-occupied">occupied</span></td>
+            </tr>
+            <tr>
+              <td class="text-center">
+                <div class="action-btn-group">
+                  <button class="btn-tbl-edit"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+                  <button class="btn-tbl-delete"><i class="fa-solid fa-trash"></i> ลบ</button>
+                </div>
+              </td>
+              <td><span class="id-badge">68</span></td>
+              <td><strong class="room-num">708</strong></td>
+              <td><span class="type-badge">1</span></td>
+              <td><span class="status-badge status-avail">available</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
 </body>
 </html>
