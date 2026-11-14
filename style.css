@@ -1,25 +1,43 @@
 /* =========================================================
-   Hotel & Tour System - Agoda Travel Portal Vibe (Pixel Perfect)
+   HOTEL & TOUR SYSTEM - AGODA LUXURY PORTAL THEME (STRICT CSS)
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600;700&display=swap');
 
 :root {
+  /* Agoda Color Palette */
   --agoda-blue: #5392f9;
   --agoda-blue-dark: #2b6cb0;
   --agoda-navy: #111e38;
-  --bg-light: #f7f9fa;
-  --card-white: #ffffff;
+  --agoda-accent: #ff567d;
+  
+  /* Status Colors */
+  --status-avail-bg: #e6f4ea;
+  --status-avail-text: #137333;
+  --status-occ-bg: #feefc3;
+  --status-occ-text: #b06000;
+  --status-maint-bg: #fce8e6;
+  --status-maint-text: #c5221f;
+
+  /* Layout Base */
+  --bg-page: #f7f9fa;
+  --card-bg: #ffffff;
   --text-dark: #2a2a2e;
-  --text-gray: #687176;
-  --border-color: #e0e6ed;
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --text-muted: #687176;
+  --border-light: #e0e6ed;
+  
+  /* Radii & Shadows */
   --radius-xl: 20px;
   --radius-lg: 12px;
+  --radius-md: 8px;
   --radius-pill: 50px;
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 12px 32px rgba(83, 146, 249, 0.25);
 }
 
+/* ---------------------------------------------------------
+   GLOBAL RESET & BASE STYLES
+   --------------------------------------------------------- */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -28,211 +46,449 @@
 }
 
 body {
-  background-color: var(--bg-light);
+  background-color: var(--bg-page);
   color: var(--text-dark);
   min-height: 100vh;
-  padding-bottom: 4rem;
+  position: relative;
+  overflow-x: hidden;
 }
 
 /* ---------------------------------------------------------
-   1. TOP NAVBAR (แก้ปัญหาข้อความหลุดทับซ้อน 100%)
+   1. TOP NAVIGATION BAR
    --------------------------------------------------------- */
-header, nav, .navbar, body > div:first-child {
-  background: #ffffff !important;
-  border-bottom: 1px solid var(--border-color) !important;
-  padding: 0.85rem 3rem !important;
+header.navbar {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid var(--border-light) !important;
+  padding: 0.75rem 2.5rem !important;
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  gap: 1.5rem !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
-  position: relative !important;
-  z-index: 100 !important;
-  width: 100% !important;
+  height: 72px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
 }
 
-/* จัดกลุ่มเมนูขวามือให้เว้นระยะสวยงาม */
-header div, nav div, .navbar div {
-  display: flex !important;
-  align-items: center !important;
-  gap: 1rem !important;
-  flex-wrap: nowrap !important;
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-header *, nav *, .navbar * {
-  color: var(--text-dark) !important;
-  font-weight: 500 !important;
-  font-size: 0.92rem !important;
+.brand-icon {
+  font-size: 1.8rem;
+  color: var(--agoda-blue);
 }
 
-/* ---------------------------------------------------------
-   2. HERO BACKGROUND BANNER (สร้างฟีลท่องเที่ยว Agoda)
-   --------------------------------------------------------- */
-body::before {
-  content: "";
-  display: block;
-  width: 100%;
-  height: 280px;
-  background: linear-gradient(135deg, #0284c7 0%, #3b82f6 50%, #06b6d4 100%);
-  position: absolute;
-  top: 60px;
-  left: 0;
-  z-index: 0;
+.brand-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--agoda-navy);
+  letter-spacing: -0.3px;
 }
 
-/* ---------------------------------------------------------
-   3. MAIN CONTAINERS & CARDS (ขยายความกว้าง + โค้งมนพรีเมียม)
-   --------------------------------------------------------- */
-.container, main, body > div:not(:first-child) {
-  max-width: 1240px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #f1f5f9;
+  padding: 0.35rem;
+  border-radius: var(--radius-pill);
 }
 
-div[style*="background"], .card, section {
-  background: var(--card-white) !important;
-  border-radius: var(--radius-xl) !important;
-  padding: 2.5rem !important;
-  border: 1px solid rgba(224, 230, 237, 0.8) !important;
-  box-shadow: var(--shadow-lg) !important;
-  margin-top: 2rem !important;
-  margin-bottom: 2rem !important;
+.nav-tab {
+  border: none;
+  background: transparent;
+  padding: 0.55rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
-h1, h2, h3, h4, .title {
-  color: var(--agoda-navy) !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.3px !important;
-  margin-bottom: 1.5rem !important;
-  font-size: 1.35rem !important;
+.nav-tab:hover {
+  color: var(--agoda-blue-dark);
 }
 
-/* ---------------------------------------------------------
-   4. FORM INPUTS & DROPDOWNS (สะอาด คลีน กรอบชัดเจน)
-   --------------------------------------------------------- */
-input[type="text"], 
-input[type="number"], 
-input[type="email"], 
-input[type="password"], 
-select, 
-textarea {
-  width: 100% !important;
-  padding: 0.85rem 1.1rem !important;
-  border: 1.5px solid var(--border-color) !important;
-  border-radius: var(--radius-lg) !important;
-  font-size: 0.95rem !important;
-  color: var(--text-dark) !important;
-  background-color: #ffffff !important;
-  transition: all 0.2s ease !important;
-  margin-bottom: 1rem !important;
-}
-
-input:focus, select:focus, textarea:focus {
-  border-color: var(--agoda-blue) !important;
-  box-shadow: 0 0 0 4px rgba(83, 146, 249, 0.18) !important;
-  outline: none !important;
-}
-
-label {
-  font-size: 0.85rem !important;
-  font-weight: 600 !important;
-  color: var(--text-gray) !important;
-  margin-bottom: 0.4rem !important;
-  display: inline-block !important;
-}
-
-/* ---------------------------------------------------------
-   5. BUTTONS (ปุ่มแคปซูลสไตล์ Agoda Search)
-   --------------------------------------------------------- */
-button, input[type="button"], input[type="submit"] {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0.5rem !important;
-  padding: 0.75rem 2rem !important;
-  font-family: 'Kanit', sans-serif !important;
-  font-size: 0.95rem !important;
-  font-weight: 600 !important;
-  border-radius: var(--radius-pill) !important;
-  border: none !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  background: linear-gradient(135deg, #5392f9, #2b6cb0) !important;
+.nav-tab.active {
+  background-color: var(--agoda-blue);
   color: #ffffff !important;
-  box-shadow: 0 6px 18px rgba(83, 146, 249, 0.35) !important;
-  white-space: nowrap !important;
+  box-shadow: 0 4px 12px rgba(83, 146, 249, 0.3);
 }
 
-button:hover, input[type="button"]:hover, input[type="submit"]:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 22px rgba(83, 146, 249, 0.45) !important;
-  filter: brightness(1.05) !important;
+.nav-tab.ai-btn {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: #ffffff;
 }
 
-button:active {
-  transform: translateY(0) !important;
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
 }
 
-/* ปุ่มรอง / Cancel */
-button[class*="cancel"], button:contains("ยกเลิก") {
-  background: #e2e8f0 !important;
-  color: var(--text-dark) !important;
-  box-shadow: none !important;
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-dark);
 }
 
-button[class*="cancel"]:hover {
-  background: #cbd5e1 !important;
+.avatar {
+  font-size: 1.4rem;
+  color: var(--agoda-blue);
 }
 
-/* ปุ่มลบ / ออกจากระบบ */
-button[class*="delete"], button[class*="danger"], button[class*="logout"], button:contains("ลบ"), button:contains("ออกจากระบบ") {
-  background: linear-gradient(135deg, #ff4d4f, #d9363e) !important;
-  box-shadow: 0 4px 14px rgba(255, 77, 79, 0.3) !important;
+.btn-logout {
+  background-color: #ffe5e5;
+  color: #e53e3e;
+  border: none;
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-logout:hover {
+  background-color: #e53e3e;
+  color: #ffffff;
 }
 
 /* ---------------------------------------------------------
-   6. TABLES (ตารางข้อมูลคลีนๆ ระดับองค์กร)
+   2. HERO BANNER
    --------------------------------------------------------- */
-table {
-  width: 100% !important;
-  border-collapse: separate !important;
-  border-spacing: 0 !important;
-  margin-top: 1.25rem !important;
-  font-size: 0.9rem !important;
-  border-radius: var(--radius-lg) !important;
-  overflow: hidden !important;
-  border: 1px solid var(--border-color) !important;
-  background-color: #ffffff !important;
+.hero-banner {
+  width: 100%;
+  height: 220px;
+  background: linear-gradient(135deg, #0284c7 0%, #3b82f6 50%, #06b6d4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #ffffff;
+  padding: 0 1.5rem;
+  position: relative;
 }
 
-th {
-  background-color: #f1f5f9 !important;
-  color: var(--text-gray) !important;
-  font-weight: 600 !important;
-  font-size: 0.82rem !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
-  padding: 1rem 1.25rem !important;
-  border-bottom: 2px solid var(--border-color) !important;
+.hero-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-td {
-  padding: 0.95rem 1.25rem !important;
-  border-bottom: 1px solid var(--border-color) !important;
-  color: var(--text-dark) !important;
-  vertical-align: middle !important;
+.hero-subtitle {
+  font-size: 1.05rem;
+  font-weight: 300;
+  opacity: 0.95;
 }
 
-td button {
-  padding: 0.4rem 1rem !important;
-  font-size: 0.82rem !important;
+/* ---------------------------------------------------------
+   3. MAIN LAYOUT & AGODA CARDS
+   --------------------------------------------------------- */
+.main-container {
+  max-width: 1200px;
+  margin: -50px auto 3rem auto;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 10;
 }
 
-tr:last-child td {
-  border-bottom: none !important;
+.agoda-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  border: 1px solid rgba(224, 230, 237, 0.8);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 2rem;
 }
 
-tr:hover td {
-  background-color: #f8fafc !important;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-light);
 }
+
+.card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-icon {
+  font-size: 1.6rem;
+  color: var(--agoda-blue);
+  background: #eef5ff;
+  padding: 0.75rem;
+  border-radius: var(--radius-lg);
+}
+
+.card-title-group h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--agoda-navy);
+}
+
+.card-title-group .subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Table Selector Box */
+.table-selector-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #f8fafc;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+}
+
+.table-selector-box label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.custom-select {
+  border: none;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--agoda-blue-dark);
+  outline: none;
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------
+   4. FORM INPUTS & BUTTONS
+   --------------------------------------------------------- */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-field label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 0.4rem;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  color: #a0aec0;
+  font-size: 0.95rem;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 0.8rem 1rem 0.8rem 2.6rem;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.input-wrapper input:focus {
+  border-color: var(--agoda-blue);
+  box-shadow: 0 0 0 4px rgba(83, 146, 249, 0.15);
+  outline: none;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-agoda-primary {
+  background: linear-gradient(135deg, #5392f9, #2b6cb0);
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(83, 146, 249, 0.35);
+}
+
+.btn-agoda-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(83, 146, 249, 0.45);
+}
+
+.btn-agoda-secondary {
+  background-color: #e2e8f0;
+  color: var(--text-dark);
+  border: none;
+  padding: 0.75rem 1.75rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-agoda-secondary:hover {
+  background-color: #cbd5e1;
+}
+
+.btn-refresh {
+  background: #eef5ff;
+  color: var(--agoda-blue-dark);
+  border: 1px solid #cce0ff;
+  padding: 0.65rem 1.4rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-refresh:hover {
+  background: var(--agoda-blue);
+  color: #ffffff;
+}
+
+/* ---------------------------------------------------------
+   5. AGODA ENTERPRISE DATA TABLE
+   --------------------------------------------------------- */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+}
+
+.agoda-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  font-size: 0.92rem;
+}
+
+.agoda-table th {
+  background-color: #f8fafc;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  padding: 1rem 1.25rem;
+  border-bottom: 2px solid var(--border-light);
+  text-align: left;
+}
+
+.agoda-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-dark);
+  vertical-align: middle;
+}
+
+.agoda-table tr:hover {
+  background-color: #f7faef;
+}
+
+.action-btn-group {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+}
+
+.btn-tbl-edit {
+  background-color: #eef5ff;
+  color: var(--agoda-blue-dark);
+  border: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-tbl-edit:hover {
+  background-color: var(--agoda-blue);
+  color: #ffffff;
+}
+
+.btn-tbl-delete {
+  background-color: #ffe5e5;
+  color: #e53e3e;
+  border: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-tbl-delete:hover {
+  background-color: #e53e3e;
+  color: #ffffff;
+}
+
+/* Badges */
+.id-badge {
+  background-color: #edf2f7;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.room-num {
+  font-size: 1rem;
+  color: var(--agoda-navy);
+}
+
+.type-badge {
+  background-color: #e2e8f0;
+  padding: 0.25rem 0.65rem;
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+.status-badge {
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: lowercase;
+}
+
+.status-avail { background-color: var(--status-avail-bg); color: var(--status-avail-text); }
+.status-occupied { background-color: var(--status-occ-bg); color: var(--status-occ-text); }
+.status-maint { background-color: var(--status-maint-bg); color: var(--status-maint-text); }
+.text-center { text-align: center !important; }
