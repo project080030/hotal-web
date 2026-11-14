@@ -1,87 +1,102 @@
 /* =========================================================
-   Hotel & Tour System - Enterprise & Professional Theme
+   Hotel & Tour System - Ultimate Enterprise Glass UI (Fixed Header)
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --nav-bg: #0f172a;            /* สีน้ำเงินเข้มทางการ */
-  --primary: #1e40af;           /* Blue 800 */
-  --primary-hover: #1e3a8a;     /* Blue 900 */
-  --bg-main: #f8fafc;           /* Light Slate Background */
-  --card-bg: #ffffff;
-  --text-primary: #1e293b;
-  --text-secondary: #475569;
-  --border-color: #cbd5e1;
-  --border-light: #e2e8f0;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --bg-dark: #090d16;
+  --panel-bg: rgba(18, 26, 43, 0.85);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --primary-glow: #6366f1;
+  --primary-hover: #4f46e5;
+  --text-main: #f8fafc;
+  --text-muted: #cbd5e1;
+  --input-bg: rgba(15, 23, 42, 0.85);
+  --radius-xl: 16px;
+  --radius-md: 10px;
   --radius-sm: 6px;
-  --radius-md: 8px;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Prompt', 'Inter', -apple-system, sans-serif;
 }
 
 body {
-  background-color: var(--bg-main);
-  color: var(--text-primary);
-  line-height: 1.5;
+  background-color: var(--bg-dark);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
+  background-attachment: fixed;
+  color: var(--text-main);
   min-height: 100vh;
+  padding-bottom: 4rem;
 }
 
 /* ---------------------------------------------------------
-   1. HEADER / NAVIGATION (แถบบาร์ด้านบนสไตล์ทางการ)
+   1. TOPBAR & NAVBAR (แก้ปัญหา admin@hotal.com โดนปุ่มบัง)
    --------------------------------------------------------- */
-header, nav, .navbar {
-  background-color: var(--nav-bg) !important;
-  color: #ffffff !important;
+header, nav, .navbar, body > div:first-child {
+  background: rgba(9, 13, 22, 0.95) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid var(--panel-border) !important;
   padding: 0.75rem 2rem !important;
-  border-bottom: 3px solid #3b82f6 !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  position: relative !important;
+  z-index: 100 !important;
 }
 
-header a, nav a, .navbar a {
-  color: #e2e8f0 !important;
-  font-weight: 500 !important;
-  text-decoration: none !important;
+/* จัดระเบียบกลุ่มเมนูด้านขวา */
+header div, nav div, .navbar div {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  flex-wrap: wrap !important;
+}
+
+header *, nav *, .navbar * {
+  color: #ffffff !important;
 }
 
 /* ---------------------------------------------------------
-   2. MAIN CONTAINER & CARD PANELS
+   2. CONTAINERS & PANELS
    --------------------------------------------------------- */
-.container, main, body > div {
-  max-width: 1280px;
+.container, main, body > div:not(:first-child) {
+  max-width: 1320px;
   margin: 0 auto;
 }
 
-/* กล่องการ์ดทางการ */
 div[style*="background: white"], 
 div[style*="background-color: white"], 
 div[style*="background: rgb(255, 255, 255)"],
 .card, section {
-  background-color: var(--card-bg) !important;
-  border-radius: var(--radius-md) !important;
-  padding: 1.75rem !important;
-  border: 1px solid var(--border-color) !important;
-  box-shadow: var(--shadow-card) !important;
-  margin-bottom: 1.5rem !important;
+  background: var(--panel-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-radius: var(--radius-xl) !important;
+  padding: 2rem !important;
+  border: 1px solid var(--panel-border) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.1) !important;
+  margin-bottom: 2rem !important;
 }
 
-/* หัวข้อหลักในหน้า */
 h1, h2, h3, h4, .title {
-  color: var(--text-primary) !important;
+  color: #ffffff !important;
   font-weight: 600 !important;
-  letter-spacing: -0.2px !important;
-  margin-bottom: 1rem !important;
+  letter-spacing: -0.4px !important;
+  margin-bottom: 1.25rem !important;
 }
 
 /* ---------------------------------------------------------
-   3. FORM INPUTS & DROPDOWNS (ช่องกรอกข้อมูล)
+   3. FORM INPUTS & SELECTS
    --------------------------------------------------------- */
 input[type="text"], 
 input[type="number"], 
@@ -90,119 +105,136 @@ input[type="password"],
 select, 
 textarea {
   width: 100% !important;
-  padding: 0.55rem 0.75rem !important;
-  border: 1px solid var(--border-color) !important;
-  border-radius: var(--radius-sm) !important;
-  font-size: 0.9rem !important;
-  color: var(--text-primary) !important;
-  background-color: #ffffff !important;
-  transition: all 0.15s ease-in-out !important;
+  padding: 0.75rem 1rem !important;
+  border: 1px solid var(--panel-border) !important;
+  border-radius: var(--radius-md) !important;
+  font-size: 0.95rem !important;
+  color: #ffffff !important;
+  background-color: var(--input-bg) !important;
+  transition: all 0.2s ease !important;
+  margin-bottom: 0.85rem !important;
+}
+
+::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: var(--primary) !important;
-  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.12) !important;
+  border-color: var(--primary-glow) !important;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25) !important;
   outline: none !important;
 }
 
 label {
-  font-size: 0.85rem !important;
+  font-size: 0.8rem !important;
   font-weight: 600 !important;
-  color: var(--text-secondary) !important;
-  margin-bottom: 0.3rem !important;
+  color: var(--text-muted) !important;
+  margin-bottom: 0.4rem !important;
   display: inline-block !important;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+select option {
+  background-color: #0f172a !important;
+  color: #ffffff !important;
 }
 
 /* ---------------------------------------------------------
-   4. FORM BUTTONS (ปุ่มกดทางการ)
+   4. BUTTONS & ACTIONS
    --------------------------------------------------------- */
 button, input[type="button"], input[type="submit"] {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   gap: 0.4rem !important;
-  padding: 0.5rem 1.2rem !important;
-  font-family: 'Sarabun', sans-serif !important;
-  font-size: 0.875rem !important;
+  padding: 0.6rem 1.25rem !important;
+  font-family: 'Prompt', sans-serif !important;
+  font-size: 0.88rem !important;
   font-weight: 600 !important;
-  border-radius: var(--radius-sm) !important;
-  border: 1px solid transparent !important;
+  border-radius: var(--radius-md) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
   cursor: pointer !important;
-  transition: background-color 0.15s ease-in-out !important;
-  background-color: var(--primary) !important;
+  transition: all 0.2s ease !important;
+  background: linear-gradient(135deg, #6366f1, #4f46e5) !important;
   color: #ffffff !important;
-  box-shadow: var(--shadow-sm) !important;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35) !important;
+  white-space: nowrap !important;
 }
 
 button:hover, input[type="button"]:hover, input[type="submit"]:hover {
-  background-color: var(--primary-hover) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.55) !important;
+  filter: brightness(1.1) !important;
 }
 
-/* ปุ่ม Logout หรือ ปุ่มลบ */
-button[class*="logout"], .btn-danger, button[class*="danger"] {
-  background-color: #dc2626 !important;
-  border-color: #b91c1c !important;
+button:active {
+  transform: translateY(0) !important;
 }
 
-button[class*="logout"]:hover, .btn-danger:hover {
-  background-color: #b91c1c !important;
+/* ปุ่มกดภายในตาราง (แก้ไข / ลบ) ให้เล็กลงกำลังดี */
+td button {
+  padding: 0.35rem 0.75rem !important;
+  font-size: 0.8rem !important;
+  border-radius: var(--radius-sm) !important;
 }
 
-/* ปุ่มรีเฟรช / ปุ่มค้นหา */
-button:contains("รีเฟรช"), button[onclick*="fetch"], button[onclick*="load"] {
-  background-color: #0f766e !important; /* Teal */
+/* ปุ่มยกเลิก */
+button[class*="cancel"], button:contains("ยกเลิก") {
+  background: linear-gradient(135deg, #475569, #334155) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* ปุ่มลบ / ออกจากระบบ */
+button[class*="delete"], button[class*="danger"], button[class*="logout"], button:contains("ลบ"), button:contains("ออกจากระบบ") {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35) !important;
 }
 
 /* ---------------------------------------------------------
-   5. ENTERPRISE DATA TABLES (ตารางข้อมูลทางการ)
+   5. TABLES
    --------------------------------------------------------- */
 table {
   width: 100% !important;
-  border-collapse: collapse !important;
-  margin-top: 1rem !important;
-  font-size: 0.875rem !important;
-  background-color: #ffffff !important;
-  border: 1px solid var(--border-color) !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  margin-top: 1.25rem !important;
+  font-size: 0.88rem !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden !important;
+  border: 1px solid var(--panel-border) !important;
 }
 
 th {
-  background-color: #f1f5f9 !important;
-  color: #334155 !important;
-  font-weight: 700 !important;
-  text-align: left !important;
-  padding: 0.75rem 1rem !important;
-  border-bottom: 2px solid var(--border-color) !important;
-  border-right: 1px solid var(--border-light) !important;
+  background-color: rgba(15, 23, 42, 0.95) !important;
+  color: var(--text-muted) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.8px !important;
+  padding: 0.85rem 1rem !important;
+  border-bottom: 1px solid var(--panel-border) !important;
 }
 
 td {
-  padding: 0.65rem 1rem !important;
-  border-bottom: 1px solid var(--border-light) !important;
-  border-right: 1px solid var(--border-light) !important;
-  color: var(--text-primary) !important;
-}
-
-th:last-child, td:last-child {
-  border-right: none !important;
-}
-
-tr:nth-child(even) td {
-  background-color: #f8fafc !important; /* สลับสีแถบตาราง */
+  padding: 0.75rem 1rem !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #e2e8f0 !important;
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  vertical-align: middle !important;
 }
 
 tr:hover td {
-  background-color: #f1f5f9 !important; /* Highlight เมื่อ Hover */
-}
-
-/* ---------------------------------------------------------
-   6. ALERTS & BADGES
-   --------------------------------------------------------- */
-.error, [class*="error"] {
-  color: #b91c1c !important;
-  font-weight: 600 !important;
-  background-color: #fef2f2 !important;
-  padding: 0.5rem 0.75rem !important;
-  border-left: 4px solid #ef4444 !important;
-  border-radius: var(--radius-sm) !important;
-  margin-top: 0.5rem !important;
+  background-color: rgba(99, 102, 241, 0.15) !important;
+  color: #ffffff !important;
 }
