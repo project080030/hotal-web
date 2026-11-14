@@ -1,3 +1,6 @@
+// ดึง Supabase Client จากที่ประกาศไว้ในโปรเจกต์เดิม
+// (ตัวอย่าง: const supabase = window.supabaseClient หรือ supabase.createClient)
+
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("crud-form");
     const tableSelect = document.getElementById("table-select");
@@ -7,31 +10,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let editingId = null;
 
-    // 1. ฟังก์ชันโหลดข้อมูลห้องพัก
+    // 1. โหลดข้อมูลตรงจาก Supabase Database
     async function loadRooms() {
         if (!tableBody) return;
 
         try {
-            tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:1.5rem; color:#94a3b8;">กำลังโหลดข้อมูล...</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:1.5rem; color:#94a3b8;">กำลังดึงข้อมูลจาก Supabase...</td></tr>`;
 
-            const response = await fetch("/api/rooms");
+            // ดึงข้อมูลตาราง rooms จาก Supabase โดยตรง
+            const { data, error } = await supabase
+                .from('rooms')
+                .select('*')
+                .order('room_id', { ascending: false })
+                .limit(20);
 
-            if (!response.ok) {
-                throw new Error("ไม่สามารถโหลดข้อมูลจากเซิร์ฟเวอร์ได้");
-            }
+            if (error) throw error;
 
-            const data = await response.json();
             tableBody.innerHTML = "";
 
-            if (!Array.isArray(data) || data.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:1.5rem; color:#94a3b8;">ไม่พบข้อมูลห้องพักในระบบ</td></tr>`;
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:1.5rem; color:#94a3b8;">ไม่พบข้อมูลห้องพัก</td></tr>`;
                 return;
             }
 
-            data.slice(0, 20).forEach(room => {
+            data.forEach(room => {
                 const tr = document.createElement("tr");
 
-                // Action Column
+                // คอลัมน์จัดการ (ปุ่มแก้ไข & ลบ)
                 const actionTd = document.createElement("td");
                 actionTd.style.textAlign = "center";
 
@@ -52,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     document.getElementById("status").value = room.status ?? "";
 
                     if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึกการแก้ไข';
-                    window.scrollTo({ top: 300, behavior: 'smooth' });
                 };
 
                 const deleteBtn = document.createElement("button");
@@ -60,15 +64,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 deleteBtn.className = "btn-tbl-delete";
                 deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i> ลบ';
                 deleteBtn.onclick = async () => {
-                    if (!confirm(`ยืนยันการลบห้องพักหมายเลข ${room.room_number}?`)) return;
+                    if (!confirm(`ยืนยันลบห้องพักหมายเลข ${room.room_number}?`)) return;
 
                     try {
-                        const res = await fetch(`/api/rooms/${room.room_id}`, { method: "DELETE" });
-                        if (!res.ok) throw new Error("ลบข้อมูลไม่สำเร็จ");
-                        alert("ลบข้อมูลเรียบร้อยแล้ว");
+                        const { error: delErr } = await supabase
+                            .from('rooms')
+                            .delete()
+                            .eq('room_id', room.room_id);
+
+                        if (delErr) throw delErr;
+                        alert("ลบข้อมูลสำเร็จ");
                         loadRooms();
                     } catch (err) {
-                        alert(err.message);
+                        alert(" Error: " + err.message);
                     }
                 };
 
@@ -76,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 actionTd.appendChild(btnGroup);
                 tr.appendChild(actionTd);
 
-                // Data Columns
+                // แสดงคอลัมน์ข้อมูล
                 [room.room_id, room.room_number, room.room_type_id, room.status].forEach(val => {
                     const td = document.createElement("td");
                     td.textContent = val ?? "-";
@@ -92,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 2. ฟังก์ชัน Submit เพิ่ม / แก้ไข
+    // 2. เพิ่ม/แก้ไขข้อมูลใน Supabase
     if (form) {
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -109,25 +117,28 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             try {
-                const url = editingId ? `/api/rooms/${editingId}` : "/api/rooms";
-                const method = editingId ? "PUT" : "POST";
+                if (editingId) {
+                    const { error } = await supabase
+                        .from('rooms')
+                        .update(payload)
+                        .eq('room_id', editingId);
+                    if (error) throw error;
+                    alert("แก้ไขข้อมูลสำเร็จ");
+                } else {
+                    const { error } = await supabase
+                        .from('rooms')
+                        .insert([payload]);
+                    if (error) throw error;
+                    alert("เพิ่มข้อมูลสำเร็จ");
+                }
 
-                const res = await fetch(url, {
-                    method: method,
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!res.ok) throw new Error("บันทึกข้อมูลไม่สำเร็จ");
-
-                alert(editingId ? "แก้ไขข้อมูลสำเร็จ" : "เพิ่มข้อมูลสำเร็จ");
                 editingId = null;
                 form.reset();
                 if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-plus"></i> เพิ่มข้อมูลใหม่';
                 loadRooms();
 
             } catch (err) {
-                alert(err.message);
+                alert("Error: " + err.message);
             }
         });
 
@@ -137,21 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 3. Event Refresh & Select
     if (refreshBtn) refreshBtn.addEventListener("click", loadRooms);
-
-    if (tableSelect) {
-        tableSelect.addEventListener("change", () => {
-            const titleEl = document.getElementById("current-table-title");
-            if (titleEl) titleEl.textContent = tableSelect.value;
-            if (tableSelect.value === "rooms") {
-                loadRooms();
-            } else {
-                tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:1.5rem; color:#94a3b8;">ตาราง ${tableSelect.value} ยังไม่เปิดใช้งาน API</td></tr>`;
-            }
-        });
-    }
-
-    // โหลดครั้งแรก
     loadRooms();
 });
