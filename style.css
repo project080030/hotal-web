@@ -1,5 +1,5 @@
 /* =========================================================
-   Hotel & Tour System - Luxury Dark Theme (Clickable)
+   Hotel & Tour System - Luxury Dark Glass Theme (Clickable)
    ========================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
@@ -208,7 +208,7 @@ header.navbar {
 /* 4. FORMS & INPUTS */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.25rem;
   margin-bottom: 1.5rem;
 }
@@ -302,6 +302,7 @@ button, input[type="button"], input[type="submit"] {
   padding: 0.9rem 1.25rem;
   border-bottom: 1px solid var(--border-color);
   text-align: left;
+  white-space: nowrap;
 }
 
 .agoda-table td {
@@ -309,6 +310,7 @@ button, input[type="button"], input[type="submit"] {
   border-bottom: 1px solid var(--border-color);
   color: var(--text-main);
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 td button {
@@ -326,5 +328,3 @@ td button {
   background: #ef4444 !important;
   color: #ffffff !important;
 }
-
-.text-center { text-align: center !important; }
