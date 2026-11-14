@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hotel & Tour Management System</title>
   
-  <!-- Google Fonts & FontAwesome -->
+  <!-- Fonts & FontAwesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -37,21 +37,21 @@
   <section class="hero-banner">
     <div class="hero-container">
       <h1>Hotel & Tour Management System</h1>
-      <p>ระบบบริหารจัดการห้องพัก และการท่องเที่ยวแบบครบวงจรระดับองค์กร</p>
+      <p>ระบบบริหารจัดการห้องพัก และการท่องเที่ยวแบบครบวงจรระดับองค์กร (Apex Hotel)</p>
     </div>
   </section>
 
   <!-- MAIN CONTAINER -->
   <main class="main-container">
 
-    <!-- CARD 1: FORM CRUD -->
+    <!-- CARD 1: DYNAMIC FORM CRUD -->
     <div class="card agoda-card">
       <div class="card-header">
         <div class="title-group">
           <div class="icon-box"><i class="fa-solid fa-sliders"></i></div>
           <div>
             <h2>จัดการข้อมูล (CRUD ทุกตาราง)</h2>
-            <p class="subtitle">เลือกตารางด้านขวาเพื่อจัดการข้อมูลในระบบ</p>
+            <p class="subtitle">เลือกตารางด้านขวาเพื่อจัดการข้อมูลและสร้างฟอร์มอัตโนมัติ</p>
           </div>
         </div>
 
@@ -60,38 +60,18 @@
           <select id="table-select" class="custom-select">
             <option value="rooms">rooms (ห้องพัก)</option>
             <option value="room_types">room_types (ประเภทห้อง)</option>
-            <option value="bookings">bookings (การจอง)</option>
-            <option value="guests">guests (ผู้เข้าพัก)</option>
+            <option value="room_bookings">room_bookings (การจองห้อง)</option>
+            <option value="customers">customers (ผู้เข้าพัก/ลูกค้า)</option>
+            <option value="tour_packages">tour_packages (แพ็กเกจทัวร์)</option>
+            <option value="tour_bookings">tour_bookings (การจองทัวร์)</option>
           </select>
         </div>
       </div>
 
-      <!-- FORM FIELDS -->
+      <!-- FORM FIELDS (จะสร้างช่องกรอกอัตโนมัติผ่าน JS) -->
       <form id="crud-form" onsubmit="return false;">
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="room_number">ROOM_NUMBER</label>
-            <div class="input-icon-wrapper">
-              <i class="fa-solid fa-door-closed input-icon"></i>
-              <input type="text" id="room_number" placeholder="กรอกค่า room_number" autocomplete="off">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="room_type_id">ROOM_TYPE_ID</label>
-            <div class="input-icon-wrapper">
-              <i class="fa-solid fa-key input-icon"></i>
-              <input type="text" id="room_type_id" placeholder="กรอกค่า room_type_id" autocomplete="off">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="status">STATUS</label>
-            <div class="input-icon-wrapper">
-              <i class="fa-solid fa-circle-check input-icon"></i>
-              <input type="text" id="status" placeholder="กรอกค่า status" autocomplete="off">
-            </div>
-          </div>
+        <div class="form-grid" id="form-fields">
+          <!-- Dynamic Input Fields Rendered Here -->
         </div>
 
         <div class="form-actions">
@@ -101,13 +81,13 @@
       </form>
     </div>
 
-    <!-- CARD 2: TABLE DATA -->
+    <!-- CARD 2: DYNAMIC TABLE DATA -->
     <div class="card agoda-card">
       <div class="card-header">
         <div class="title-group">
           <div class="icon-box alt"><i class="fa-solid fa-list-check"></i></div>
           <div>
-            <h2>ข้อมูลในตาราง: <span id="current-table-title">rooms</span></h2>
+            <h2>ข้อมูลในตาราง: <span id="current-table-title" style="color: var(--agoda-blue);">rooms</span></h2>
             <span class="badge-sub">(แสดง 20 แถวล่าสุด)</span>
           </div>
         </div>
@@ -118,11 +98,7 @@
         <table class="agoda-table" id="data-table">
           <thead>
             <tr>
-              <th style="width: 140px; text-align: center;">จัดการ</th>
-              <th>ROOM_ID</th>
-              <th>ROOM_NUMBER</th>
-              <th>ROOM_TYPE_ID</th>
-              <th>STATUS</th>
+              <!-- หัวตารางจะเปลี่ยนตามคอลัมน์จริงอัตโนมัติ -->
             </tr>
           </thead>
           <tbody id="table-body">
@@ -134,7 +110,7 @@
 
   </main>
 
-  <!-- Supabase JS SDK (ต้องอยู่เหนือ app.js) -->
+  <!-- Supabase JS Client SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
 </body>
